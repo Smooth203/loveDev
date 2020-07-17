@@ -5,16 +5,19 @@ function loadWorld()
 	world.x, world.y = 0, 0
 	world.w, world.h = 500, 500
 	world.bg = love.graphics.newImage('assets/island.png')
+
+	p,q = 0,0
+
 end
 
 function getColour(x, y)
-	--r,g,b,a = 0,0,0,0
+	r, g, b, a = 0, 0, 0, 0
 	love.graphics.captureScreenshot(
 		function(imageData)
-			r, g, b, a = imageData:getPixel(x,y)
+			cap = imageData:encode('png', 'cap')
 		end
 	)
-	return r
+	return r, g, b, a
 end
 
 function drawWorld()
@@ -25,18 +28,16 @@ function drawWorld()
 	-- end
 
 	love.graphics.draw(world.bg, world.x, world.y, 0, 2, 2)
-	--love.graphics.print(tostring(green), 0, 0)
+	love.graphics.print(p .. " " .. q, 0, 0)
 
-	--trees?
-	for i = 0, 10 do
-		love.graphics.print(getColour(i, 0), i*10, 0)
-	end
+	--trees
 end
 
 function updateWorld(dt)
 	--world.x = world.x + 1 * dt
 	if love.keyboard.isDown('w') then
-		world.y = world.y + 100 * dt
+		--world.y = world.y + 100 * dt
+		getColour(10, 10)
 	end
 	if love.keyboard.isDown('s') then
 		world.y = world.y - 100 * dt
