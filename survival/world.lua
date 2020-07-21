@@ -8,6 +8,7 @@ function loadWorld()
 	}
 	world.physics = love.physics.newWorld(0,0,true)
 	world.x, world.y = 0, 0
+<<<<<<< HEAD
 	world.w, world.h = 1000, 1000
 	world.bgImg = love.graphics.newImage('assets/grass.jpg')
 	world.bgImg:setWrap("repeat", "repeat")
@@ -26,26 +27,47 @@ function worldColour()
 	else
 		return 1,1,1,1
 	end
+=======
+	world.w, world.h = 500, 500
+	world.bg = love.graphics.newImage('assets/island.png')
+
+	p,q = 0,0
+
+>>>>>>> origin/master
 end
 
 function getColour(x, y)
-	--r,g,b,a = 0,0,0,0
+	r, g, b, a = 0, 0, 0, 0
 	love.graphics.captureScreenshot(
 		function(imageData)
-			r, g, b, a = imageData:getPixel(x,y)
+			cap = imageData:encode('png', 'cap')
 		end
 	)
-	return r
+	return r, g, b, a
 end
 
 function drawWorld()
+<<<<<<< HEAD
 	love.graphics.draw(world.bgImg, world.bgQuad, world.x, world.y)
+=======
+	-- for i = world.x, world.x+world.w / world.bg:getWidth() do
+	-- 	for j = world.y, world.y+world.h / world.bg:getHeight() do
+	-- 		love.graphics.draw(world.bg, i * world.bg:getWidth(), j * world.bg:getHeight())
+	-- 	end
+	-- end
+
+	love.graphics.draw(world.bg, world.x, world.y, 0, 2, 2)
+	love.graphics.print(p .. " " .. q, 0, 0)
+
+	--trees
+>>>>>>> origin/master
 end
 
 function updateWorld(dt)
 	--world.x = world.x + 1 * dt
 	if love.keyboard.isDown('w') then
-		world.y = world.y + 100 * dt
+		--world.y = world.y + 100 * dt
+		getColour(10, 10)
 	end
 	if love.keyboard.isDown('s') then
 		world.y = world.y - 100 * dt
