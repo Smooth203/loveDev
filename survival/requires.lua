@@ -1,1 +1,5 @@
 require 'world'
+require 'trees'
+require 'player'
+require 'alert'
+require 'ui'
