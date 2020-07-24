@@ -57,7 +57,6 @@ function love.update(dt)
 		updatePlayer(dt)
 		updateTrees(dt)
 		updateAlert(dt)
-		updateAlert(dt)
 	end
 
 	updateUI(dt)
