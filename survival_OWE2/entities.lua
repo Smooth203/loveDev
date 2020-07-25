@@ -4,7 +4,7 @@ entities = {
 		entities.types = {}
 		require 'scripts/player'
 
-		entities.newEntity('players', 'player', love.graphics.getWidth()/2, love.graphics.getHeight()/2)
+		entities.newEntity('players', 'player', love.graphics.getWidth()/2, love.graphics.getHeight()/2, love.graphics.newImage('assets/player.png'))
 	end,
 
 	draw = function()
@@ -20,7 +20,7 @@ entities = {
 	end,
 
 	--Custom Functions
-	newEntity = function(Type, Name, posX, posY, sizeW, sizeH, Img)
+	newEntity = function(Type, Name, posX, posY, Img, sizeW, sizeH)
 		if Name == nil then
 			Name = 'Entity'
 		end
@@ -30,11 +30,8 @@ entities = {
 		if posY == nil then
 			posY = 0
 		end
-		if sizeW == nil then
-			sizeW = 10
-		end
-		if sizeH == nil then
-			sizeH = 10
+		if Img then
+			sizeW, sizeH = Img:getWidth(), Img:getHeight()
 		end
 
 		entity = {
