@@ -48,8 +48,10 @@ cam = {
 	end,
 
 	doZoom = function()
+		oox, ooy = cam.tx, cam.ty
+		cam.tx, cam.ty = 0, 0
 		ox, oy = love.graphics.getWidth(), love.graphics.getHeight() --gets orig w & h of screen
 		zx, zy = ox*cam.zoom, oy*cam.zoom --zooms
-		cam.tx, cam.ty = (ox-zx)/2, (oy-zy)/2 --how much to offset
+		cam.tx, cam.ty = ((ox-zx)/2), ((oy-zy)/2) --how much to offset
 	end
 }
