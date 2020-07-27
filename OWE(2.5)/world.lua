@@ -186,7 +186,7 @@ function World:update(dt)
 	if love.keyboard.isDown('d') then
 		World:move(0.1 * tileSize * dt, 0)
 	end
-	count = math.floor(count + 1 *dt)
+	--count = math.floor(count + 1 *dt)
 	
 end
 
