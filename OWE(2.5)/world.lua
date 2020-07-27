@@ -13,6 +13,35 @@ local tilesetImg
 local tileSize
 local tileQuads = {}
 
+function World:getPos()
+	return worldX, worldY
+end
+
+function World:setTile(batch, id)
+	if batch == 'ground' then
+		for i = 1, #grounds do
+			if i == id then
+				local x = math.floor(grounds[i].x/tileDisplayW)+math.floor(worldX)
+				local y = math.floor(grounds[i].y/tileDisplayH)+math.floor(worldY)
+				world[x][y].ground = 0
+			end
+		end
+	end
+	World:updateTilesetBatch('ground')
+end
+
+function World:getTile(batch, id)
+	if batch == 'ground' then
+		for i = 1, #grounds do
+			if i == id then
+				local x = math.floor(grounds[i].x/tileDisplayW)+math.floor(worldX)
+				local y = math.floor(grounds[i].y/tileDisplayH)+math.floor(worldY)
+				return x, y
+			end
+		end
+	end
+end
+
 function World:load()
 	-- World Setup
 	worldW = 60
@@ -80,7 +109,9 @@ function World:load()
 	end
 
 	groundBatch = love.graphics.newSpriteBatch(tilesetImg, tileDisplayW*tileDisplayH)
+	grounds = {}
 	entityBatch = love.graphics.newSpriteBatch(tilesetImg, tileDisplayW*tileDisplayH)
+	entities = {}
 
 	World:updateTilesetBatch('ground')
 	World:updateTilesetBatch('entity')
@@ -91,22 +122,23 @@ end
 function World:updateTilesetBatch(batch)
 	if batch == 'ground' then
 		groundBatch:clear()
+		grounds = {}
 		for x = 0, tileDisplayW-1 do
 			for y = 0, tileDisplayH-1 do
-				groundBatch:add(tileQuads[world[x+math.floor(worldX)][y+math.floor(worldY)].ground], x*tileSize, y*tileSize)
-
-				--print(x+math.floor(worldX).. ", " ..y+math.floor(worldY))
-				if col(love.graphics.getWidth()/2-tileSize/2, love.graphics.getHeight()/2-tileSize/2, tileSize, tileSize, math.floor(worldX)+14, math.floor(worldY)+11, tileSize, tileSize) then
-					world[math.floor(worldX)+14][math.floor(worldY)+11].ground = 0
-				end
+				ground = {}
+				ground.id = groundBatch:add(tileQuads[world[x+math.floor(worldX)][y+math.floor(worldY)].ground], x*tileSize, y*tileSize)
+				ground.x = x*tileSize
+				ground.y = y*tileSize
+				table.insert(grounds, ground)
 			end
 		end
 		groundBatch:flush()
 	elseif batch == 'entity' then
 		entityBatch:clear()
+		entities = {}
 		for x = 0, tileDisplayW-1 do
 			for y = 0, tileDisplayH-1 do
-
+				local entity = {}
 				local ent = world[x+math.floor(worldX)][y+math.floor(worldY)].entity
 				--
 				if ent == 4 then
@@ -115,11 +147,16 @@ function World:updateTilesetBatch(batch)
 						for j = 1, 3 do
 							count = count + 1
 							id = tostring(4) .. "." .. tostring(count)
-							entityBatch:add(tileQuads[id], ((i-1)*tileSize)+x*tileSize, ((j-1)*tileSize)+y*tileSize)
+							entity.id = entityBatch:add(tileQuads[id], ((i-1)*tileSize)+x*tileSize, ((j-1)*tileSize)+y*tileSize)
 						end
 					end
 				else
-					entityBatch:add(tileQuads[ent], x*tileSize, y*tileSize)
+					--entity.id = entityBatch:add(tileQuads[ent], x*tileSize, y*tileSize)
+				end
+				entity.x = x*tileSize
+				entity.y = y*tileSize
+				if entity.id ~= nil then
+					table.insert(entities, entity)
 				end
 			end
 		end
@@ -128,10 +165,12 @@ function World:updateTilesetBatch(batch)
 end
 
 function World:draw()
-	love.graphics.draw(groundBatch, math.floor(-zoomX*(worldX%1)*tileSize)-tileSize*2, math.floor(-zoomY*(worldY%1)*tileSize)-tileSize*2, 0, zoomX, zoomY)
-	love.graphics.draw(entityBatch, math.floor(-zoomX*(worldX%1)*tileSize)-tileSize*2, math.floor(-zoomY*(worldY%1)*tileSize)-tileSize*2, 0, zoomX, zoomY)
+	love.graphics.draw(groundBatch, math.floor(-zoomX*(worldX%1)*tileSize)-tileSize, math.floor(-zoomY*(worldY%1)*tileSize)-tileSize, 0, zoomX, zoomY)
+	love.graphics.draw(entityBatch, math.floor(-zoomX*(worldX%1)*tileSize)-tileSize, math.floor(-zoomY*(worldY%1)*tileSize)-tileSize, 0, zoomX, zoomY)
 	love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
-	love.graphics.rectangle('line', love.graphics.getWidth()/2-tileSize/2, love.graphics.getHeight()/2-tileSize/2, tileSize, tileSize)
+	for i = 1, #entities do
+		--print(entities[i].x .. ", " .. entities[i].y)		
+	end
 end
 
 function World:update(dt)
@@ -147,7 +186,8 @@ function World:update(dt)
 	if love.keyboard.isDown('d') then
 		World:move(0.1 * tileSize * dt, 0)
 	end
-	print(worldX .. ", " .. worldY)
+	count = math.floor(count + 1 *dt)
+	
 end
 
 function World:move(dx, dy)

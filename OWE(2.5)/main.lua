@@ -1,13 +1,16 @@
 io.stdout:setvbuf("no") -- live console for ST3
 
 require 'world'
+require 'player'
 
 function love.load()
 	World:load()
+	Player:load()
 end
 
 function love.draw()
 	World:draw()
+	Player:draw()
 end
 
 function love.update(dt)
