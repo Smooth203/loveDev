@@ -9,12 +9,14 @@ function love.load()
 end
 
 function love.draw()
-	World:draw()
+	World:draw('ground')
 	Player:draw()
+	World:draw('entities')
 end
 
 function love.update(dt)
 	World:update(dt)
+	Player:update(dt)
 end
 
 -- custom funcs

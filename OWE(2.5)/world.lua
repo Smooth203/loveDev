@@ -13,17 +13,30 @@ local tilesetImg
 local tileSize
 local tileQuads = {}
 
-function World:getPos()
-	return worldX, worldY
+function World:get()
+	local w = {
+		world=world,
+		worldX=worldX,
+		worldY=worldY,
+		worldH=worldH,
+		worldW=worldW,
+		tileSize=tileSize,
+		tileDisplayW=tileDisplayW,
+		tileDisplayH=tileDisplayH,
+		zoomX=zoomX,
+		zoomY=zoomY
+	}
+	return w
 end
 
 function World:setTile(batch, id)
 	if batch == 'ground' then
 		for i = 1, #grounds do
 			if i == id then
-				local x = math.floor(grounds[i].x/tileDisplayW)+math.floor(worldX)
-				local y = math.floor(grounds[i].y/tileDisplayH)+math.floor(worldY)
-				world[x][y].ground = 0
+				g = grounds[i]
+				local x = (g.x/tileSize)
+				local y = (g.y/tileSize)
+				world[x+1][y+1].ground = 0
 			end
 		end
 	end
@@ -34,8 +47,9 @@ function World:getTile(batch, id)
 	if batch == 'ground' then
 		for i = 1, #grounds do
 			if i == id then
-				local x = math.floor(grounds[i].x/tileDisplayW)+math.floor(worldX)
-				local y = math.floor(grounds[i].y/tileDisplayH)+math.floor(worldY)
+				g = grounds[i]
+				local x = (g.x/tileSize)
+				local y = (g.y/tileSize)
 				return x, y
 			end
 		end
@@ -164,33 +178,33 @@ function World:updateTilesetBatch(batch)
 	end
 end
 
-function World:draw()
-	love.graphics.draw(groundBatch, math.floor(-zoomX*(worldX%1)*tileSize)-tileSize, math.floor(-zoomY*(worldY%1)*tileSize)-tileSize, 0, zoomX, zoomY)
-	love.graphics.draw(entityBatch, math.floor(-zoomX*(worldX%1)*tileSize)-tileSize, math.floor(-zoomY*(worldY%1)*tileSize)-tileSize, 0, zoomX, zoomY)
-	love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
-	for i = 1, #entities do
-		--print(entities[i].x .. ", " .. entities[i].y)		
+function World:draw(layer)
+	if layer == 'ground' then
+		love.graphics.draw(groundBatch, math.floor(-zoomX*(worldX%1)*tileSize)-tileSize, math.floor(-zoomY*(worldY%1)*tileSize)-tileSize, 0, zoomX, zoomY)
+	elseif layer == 'entities' then
+		love.graphics.draw(entityBatch, math.floor(-zoomX*(worldX%1)*tileSize)-tileSize, math.floor(-zoomY*(worldY%1)*tileSize)-tileSize, 0, zoomX, zoomY)
+		love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
 	end
 end
 
 function World:update(dt)
 	if love.keyboard.isDown('w') then
-		World:move(0, -0.1 * tileSize * dt)
+		--World:move(0, -0.1 * tileSize * dt)
 	end
 	if love.keyboard.isDown('s') then
-		World:move(0, 0.1 * tileSize * dt)
+		--World:move(0, 0.1 * tileSize * dt)
 	end
 	if love.keyboard.isDown('a') then
-		World:move(-0.1 * tileSize * dt, 0)
+		--World:move(-0.1 * tileSize * dt, 0)
 	end
 	if love.keyboard.isDown('d') then
-		World:move(0.1 * tileSize * dt, 0)
+		--World:move(0.1 * tileSize * dt, 0)
 	end
 	--count = math.floor(count + 1 *dt)
 	
 end
 
-function World:move(dx, dy)
+function World:move(dx, dy, dt)
 	oldX = worldX
 	oldY = worldY
 	worldX = math.max(math.min(worldX + dx, worldW - tileDisplayW), 1)
