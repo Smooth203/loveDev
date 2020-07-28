@@ -102,11 +102,12 @@ function bj:finish(result)
 end
 
 function bj:gameOver()
+	bj:draw()
 	love.graphics.setFont(Tfont)
-	love.graphics.print(results.result, 10, 10)
+	love.graphics.print(results.result, (sw/2)-5, sh/2)
 	love.graphics.setFont(font)
-	love.graphics.print("Player: "..results.player, 10, 100)
-	love.graphics.print("Dealer: "..results.dealer, 10, 150)
+	--love.graphics.print("Player: "..results.player, 10, 100)
+	--love.graphics.print("Dealer: "..results.dealer, 10, 150)
 end
 
 function bj:keypressed(key)
