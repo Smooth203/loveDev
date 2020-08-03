@@ -34,17 +34,38 @@ function Player:move(dx, dy, dt)
 
 	--print(player.x, player.y, "|", world.worldX, world.worldY)
 	--print(math.max(math.min(world.worldX + math.abs(dx), world.worldW - world.tileDisplayW)-math.abs(dx), 1), world.worldX)
-	print("worldX="..tostring(world.worldX), "player.x="..tostring(player.x))
+	--print("worldXthing="..tostring(math.ceil(math.max(math.min(world.worldX + dx, world.worldW - world.tileDisplayW), 1))), "player.x="..tostring(player.x))
+	--print("worldYthing="..tostring(math.ceil(math.max(math.min(world.worldY + dy, world.worldH - world.tileDisplayH), 1))), "player.y="..tostring(player.y))
 
-	if (worldX ~= 1) then
+	tx, ty = math.ceil(math.max(math.min(world.worldX + dx, world.worldW - world.tileDisplayW), 1)), math.ceil(math.max(math.min(world.worldY + dy, world.worldH - world.tileDisplayH), 1))
+
+	if (tx > 1 and tx < 32) and (player.x == sw/2) then
+		if player.x > sw/2 then
+			player.x = sw/2
+		end
 		World:move(dx, 0, dt)
 	else
 		player.x = player.x + dx/dt
 	end
-	if (player.y >= sh/2) then
+	if (ty > 1 and ty < 18) and (player.y == sh/2) then
+		if player.y > sh/2 then
+			player.y = sh/2
+		end
 		World:move(0, dy, dt)
 	else
 		player.y = player.y + dy/dt
+	end
+
+	print('tiles')
+	for i, tile in pairs(grounds) do
+		local x, y = World:getTile('ground', tile.id)
+		cx, cy = x*world.tileSize, y*world.tileSize
+		if col(player.x, player.y, world.tileSize, world.tileSize,  cx, cy, world.tileSize, world.tileSize) then
+			print(tile.id)
+			tile.prevQuad = tile.quad
+			World:setTile('ground', tile.id, 0)
+			tile.entered = true
+		end
 	end
 
 	-- if (math.max(math.min(world.worldX + math.abs(dx), world.worldW - world.tileDisplayW), 1)-math.abs(dx) ~= 1 and world.worldX ~= 32) and player.x >= 400 then

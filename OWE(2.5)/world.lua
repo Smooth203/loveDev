@@ -29,14 +29,14 @@ function World:get()
 	return w
 end
 
-function World:setTile(batch, id)
+function World:setTile(batch, id, to)
 	if batch == 'ground' then
 		for i = 1, #grounds do
 			if i == id then
 				g = grounds[i]
 				local x = (g.x/tileSize)
 				local y = (g.y/tileSize)
-				world[x+1][y+1].ground = 0
+				world[x+1][y+1].ground = to
 			end
 		end
 	end
@@ -143,6 +143,9 @@ function World:updateTilesetBatch(batch)
 				ground.id = groundBatch:add(tileQuads[world[x+math.floor(worldX)][y+math.floor(worldY)].ground], x*tileSize, y*tileSize)
 				ground.x = x*tileSize
 				ground.y = y*tileSize
+				ground.entered = false
+				ground.quad = world[x+math.floor(worldX)][y+math.floor(worldY)].ground
+				ground.prevQuad = 0
 				table.insert(grounds, ground)
 			end
 		end
