@@ -34,8 +34,8 @@ function World:setTile(batch, id, to)
 		for i = 1, #grounds do
 			if i == id then
 				g = grounds[i]
-				local x = (g.x/tileSize)
-				local y = (g.y/tileSize)
+				local x = (g.x/tileSize)+math.floor(worldX)
+				local y = (g.y/tileSize)+math.floor(worldY)
 				world[x+1][y+1].ground = to
 			end
 		end
@@ -48,8 +48,8 @@ function World:getTile(batch, id)
 		for i = 1, #grounds do
 			if i == id then
 				g = grounds[i]
-				local x = (g.x/tileSize)
-				local y = (g.y/tileSize)
+				local x = (g.x/tileSize)+math.floor(worldX)
+				local y = (g.y/tileSize)+math.floor(worldY)
 				return x, y
 			end
 		end
@@ -59,7 +59,7 @@ end
 function World:load()
 	-- World Setup
 	worldW = 60
-	worldH = 40
+	worldH = 80
 
 	world = {}
 	for x = 1, worldW do

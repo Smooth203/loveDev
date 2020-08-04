@@ -6,11 +6,21 @@ local sw, sh = love.graphics.getDimensions()
 
 function Player:load()
 	world = World:get()
-	player.x, player.y = sw/2, sh/2
+	player.x, player.y = (sw/2)-world.tileSize/2, (sh/2)-world.tileSize/2
 end
 
 function Player:draw()
 	love.graphics.rectangle('fill', player.x, player.y, world.tileSize, world.tileSize)
+
+	love.graphics.line(0, 0, sw, sh)
+	love.graphics.line(0, sh, sw, 0)
+
+	--World:setTile('ground', 274, 0)
+
+	love.graphics.setColor(1,0,0)
+	love.graphics.rectangle('fill', player.x+world.tileSize/2, player.y+world.tileSize/2, 1, 1)
+
+	love.graphics.setColor(1,1,1)
 end
 
 function Player:update(dt)
@@ -39,7 +49,7 @@ function Player:move(dx, dy, dt)
 
 	tx, ty = math.ceil(math.max(math.min(world.worldX + dx, world.worldW - world.tileDisplayW), 1)), math.ceil(math.max(math.min(world.worldY + dy, world.worldH - world.tileDisplayH), 1))
 
-	if (tx > 1 and tx < 32) and (player.x == sw/2) then
+	if (tx > 1 and tx < (world.worldW-world.tileDisplayW)) and (player.x == (sw/2)-world.tileSize/2) then
 		if player.x > sw/2 then
 			player.x = sw/2
 		end
@@ -47,7 +57,7 @@ function Player:move(dx, dy, dt)
 	else
 		player.x = player.x + dx/dt
 	end
-	if (ty > 1 and ty < 18) and (player.y == sh/2) then
+	if (ty > 1 and ty < (world.worldH-world.tileDisplayH)) and (player.y == (sh/2)-world.tileSize/2) then
 		if player.y > sh/2 then
 			player.y = sh/2
 		end
@@ -56,15 +66,16 @@ function Player:move(dx, dy, dt)
 		player.y = player.y + dy/dt
 	end
 
-	print('tiles')
+	print("-")
 	for i, tile in pairs(grounds) do
 		local x, y = World:getTile('ground', tile.id)
-		cx, cy = x*world.tileSize, y*world.tileSize
-		if col(player.x, player.y, world.tileSize, world.tileSize,  cx, cy, world.tileSize, world.tileSize) then
-			print(tile.id)
-			tile.prevQuad = tile.quad
+		cx, cy = (x-math.floor(world.worldX))*world.tileSize, (y-math.floor(world.worldY))*world.tileSize
+		if col(player.x+world.tileSize/2, player.y+world.tileSize/2, 0, 0,  cx, cy, world.tileSize, world.tileSize) then
+			--tile.prevQuad = tile.quad
 			World:setTile('ground', tile.id, 0)
-			tile.entered = true
+			--tile.entered = true
+			print(player.x+world.tileSize/2, player.y+world.tileSize/2)
+			print(cx, cy)
 		end
 	end
 
