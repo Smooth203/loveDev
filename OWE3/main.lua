@@ -1,21 +1,38 @@
 io.stdout:setvbuf("no") -- live console for ST3
 
 require 'world'
+require 'entities'
+require 'ui'
 
 function love.load()
 	sw, sh = love.graphics.getDimensions()
+	love.graphics.setDefaultFilter('nearest', 'linear')
+	math.randomseed(os.time())
 
 	World:load()
+	Entities:load()
+	Ui:load()
 end
 
 function love.draw()
 	World:draw()
+	Entities:draw()
+	Ui:draw()
+
+	love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
 end
 
 function love.update(dt)
 	sw, sh = love.graphics.getDimensions()
 
 	World:update(dt)
+	Entities:update(dt)
+	Ui:update(dt)
+end
+
+function love.mousepressed(x,y,button)
+	Entities:mousepressed(x,y,button)
+	Ui:mousepressed(x,y,button)
 end
 
 -- custom funcs
