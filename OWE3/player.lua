@@ -37,8 +37,8 @@ function newPlayer(name, x, y, control, img)
 			love.graphics.rectangle('line', (Ui:get('mouse').tile.x*32)+World:get('x'), (Ui:get('mouse').tile.y*32)+World:get('y'), 32, 32)
 		end
 
-		love.graphics.print(math.floor((player.x+player.img:getWidth()/2)-World:get('x'))..", "..math.floor((player.y+player.img:getHeight()/2)-World:get('y')), 10, 50)
-		love.graphics.print(math.floor(((player.x+player.img:getWidth()/2)-World:get('x'))/World:get('tileSize'))..", "..math.floor(((player.y+player.img:getHeight()/2)-World:get('y'))/World:get('tileSize')), 10, 70)
+		-- love.graphics.print(math.floor((player.x+player.img:getWidth()/2)-World:get('x'))..", "..math.floor((player.y+player.img:getHeight()/2)-World:get('y')), 10, 50)
+		-- love.graphics.print(math.floor(((player.x+player.img:getWidth()/2)-World:get('x'))/World:get('tileSize'))..", "..math.floor(((player.y+player.img:getHeight()/2)-World:get('y'))/World:get('tileSize')), 10, 70)
 	end
 
 	function player.update(dt)
@@ -56,9 +56,12 @@ function newPlayer(name, x, y, control, img)
 		if button == 1 then
 			local tile = Ui:get('mouse').tile
 			if col(Ui:get('mouse').x,Ui:get('mouse').y,0,0, player.x-100, player.y-100,200,200) then
-				if tile.texture == 3 then
-					World:setTile(tile.x, tile.y, 1)
-					Ui:addItem('flower', 'inv')
+				--Checks for structure at coords. If not, check the ground interactions
+				if not Entities:action(x,y,button) then
+					if tile.texture == 3 then
+						World:setTile(tile.x, tile.y, 1)
+						Ui:addItem('flower', 'inv')
+					end
 				end
 			end
 		end

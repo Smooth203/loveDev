@@ -43,3 +43,9 @@ function col(x1,y1,w1,h1, x2,y2,w2,h2)
 		return false
 	end
 end
+
+function tlen(table)
+	local count = 0
+	for _ in pairs(table) do count = count + 1 end
+	return count
+end
