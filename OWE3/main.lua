@@ -6,7 +6,6 @@ require 'ui'
 
 function love.load()
 	sw, sh = love.graphics.getDimensions()
-	love.graphics.setDefaultFilter('nearest', 'linear')
 	math.randomseed(os.time())
 
 	World:load()
@@ -15,6 +14,7 @@ function love.load()
 end
 
 function love.draw()
+	love.graphics.setDefaultFilter('nearest', 'nearest')
 	World:draw()
 	Entities:draw()
 	Ui:draw()

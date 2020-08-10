@@ -2,6 +2,6 @@ Structures = {}
 
 local tree = require 'tree'
 
-function newStructure(name, x, y)
-	return Structures[name](x, y)
+function newStructure(id, name, x, y)
+	return Structures[name](id, x, y)
 end
