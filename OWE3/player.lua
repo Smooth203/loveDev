@@ -1,5 +1,5 @@
 function newPlayer(name, x, y, control, img)
-	
+
 	if control == 'wasd' then
 		up = 'w'
 		left = 'a'
@@ -57,10 +57,12 @@ function newPlayer(name, x, y, control, img)
 			local tile = Ui:get('mouse').tile
 			if col(Ui:get('mouse').x,Ui:get('mouse').y,0,0, player.x-100, player.y-100,200,200) then
 				--Checks for structure at coords. If not, check the ground interactions
-				if not Entities:action(x,y,button) then
+				local _, equipped = Ui:get('inv')
+				if not Entities:action(x,y,button,equipped) then
 					if tile.texture == 3 then
-						World:setTile(tile.x, tile.y, 1)
-						Ui:addItem('flower', 'inv')
+						if Ui:addItem('flower', 'inv') then
+							World:setTile(tile.x, tile.y, 1)
+						end
 					end
 				end
 			end
@@ -69,7 +71,7 @@ function newPlayer(name, x, y, control, img)
 
 	function player.camAdjust(dt)
 		if player.stoppedX and player.stoppedY then
-			player.timer = player.timer - 10 * dt
+			player.timer = player.timer - dt
 			if player.timer < 0 then
 				if player.x > sw/2 then
 					player.x = player.x - 50 * dt

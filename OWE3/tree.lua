@@ -9,6 +9,7 @@ local texture = {
 Structures['tree'] = function(id,x,y)
 		local tree = {}
 		tree.health = 100
+		tree.chopped = false
 		tree.id = tostring(id)
 		tree.quad = love.graphics.newQuad(texture.x*World:get('tileSize'), texture.y*World:get('tileSize'), texture.w*World:get('tileSize'), texture.h*World:get('tileSize'), World:get('tileset'):getWidth(), World:get('tileset'):getHeight())
 		tree.x = x
@@ -25,15 +26,22 @@ Structures['tree'] = function(id,x,y)
 		end
 		function tree.action(x,y,button,equipped)
 			if col(x,y,0,0, math.floor(World:get('x')+(tree.x*World:get('tileSize'))),math.floor(World:get('y')+(tree.y*World:get('tileSize'))),tree.w*World:get('tileSize'),tree.h*World:get('tileSize')) then
-				
+
+				local dmgMultiplier = 1
+
+				if equipped.item.name then
+					dmgMultiplier = equipped.item.equip.dmgMultiplier
+				end
+
 				if tree.health > 0 then
-					tree.health = tree.health - 25 -- * dmgMultiplier
+					tree.health = tree.health - 1 * dmgMultiplier
 					print('Tree Damaged', tree.health)
 				end
-				if tree.health <= 0 then
+				if tree.health <= 0 and not tree.chopped then
 					Entities:removeEntity(tree.id.."TOP")
 					Ui:addItem('wood', 'inv')
 					print('Tree Chopped')
+					tree.chopped = true
 				end
 
 			else

@@ -4,6 +4,8 @@ Ui = {
 	get = function(self, p)
 		if p == 'mouse' then
 			return self.mouse
+		elseif p == 'inv' then
+			return self.inv, self.equipped
 		end
 	end,
 
@@ -147,12 +149,14 @@ Ui = {
 
 	addItem = function(self, item, to, toSlot)
 		local item = items[item]
+		local complete = false
 		if to == 'inv' then
 			if toSlot == nil then
 				for i, slot in ipairs(self.inv) do
 					if slot.isEmpty then
 						slot.item = item
 						slot.isEmpty = false
+						complete = true
 						break
 					end
 				end
@@ -164,6 +168,10 @@ Ui = {
 			end
 		elseif to == 'equipped' then
 			self.equipped.item = item
+			complete = true
+		end
+		if complete then
+			return true
 		end
 	end,
 

@@ -21,8 +21,8 @@ World = {
 		self.tileset = love.graphics.newImage('assets/tileset.png')
 		self.tileSize = 32
 
-		self.x = -600
-		self.y = -2000
+		self.x = -6000
+		self.y = -399
 		self.w = 500
 		self.h = 500
 		self.world = {}
@@ -83,7 +83,7 @@ World = {
 				end
 			end
 		end
-		local tile = {x=-999,y=-999}
+		local tile = {x=-9999999,y=-9999999}
 		return tile
 	end,
 

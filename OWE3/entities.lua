@@ -30,7 +30,7 @@ Entities = {
 
 	draw = function(self)
 		for i, e in ipairs(self.entities) do
-			if e.draw() then
+			if e.draw then
 				e.draw()
 			end
 		end
@@ -41,6 +41,17 @@ Entities = {
 		for i, e in ipairs(self.entities) do
 			if e.update then
 				e.update(dt)
+			end
+			if e.collision then
+				e.collision(Entities:getPlayer())
+			end
+		end
+	end,
+
+	keypressed = function(self, key)
+		for i, e in ipairs(self.entities) do
+			if e.keypressed then
+				e.keypressed(key)
 			end
 		end
 	end,
