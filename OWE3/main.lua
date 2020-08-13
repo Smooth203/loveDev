@@ -3,6 +3,7 @@ io.stdout:setvbuf("no") -- live console for ST3
 require 'world'
 require 'entities'
 require 'ui'
+require 'saveload'
 
 function love.load()
 	sw, sh = love.graphics.getDimensions()
@@ -37,6 +38,9 @@ end
 
 function love.keypressed(key)
 	Entities:keypressed(key)
+	if key == 'g' then
+		save()
+	end
 end
 
 -- custom funcs

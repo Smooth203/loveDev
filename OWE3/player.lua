@@ -1,4 +1,4 @@
-function newPlayer(name, x, y, control, img)
+function newPlayer(name, x, y, control, imgPath)
 
 	if control == 'wasd' then
 		up = 'w'
@@ -13,6 +13,8 @@ function newPlayer(name, x, y, control, img)
 	end
 
 	local player = {
+		id = love.timer.getTime(),
+		Type = 'player',
 		name = name,
 		x = x,
 		y = y,
@@ -23,14 +25,20 @@ function newPlayer(name, x, y, control, img)
 			down = down,
 			right = right
 		},
-		img = img,
-		w = img:getWidth(),
-		h = img:getHeight(),
+		imgPath = imgPath,
+		img = love.graphics.newImage(imgPath),
 		r = 0,
 		timer = 100
 	}
+	player.w = player.img:getWidth()
+	player.h = player.img:getHeight()
 
-	function player.draw()
+	function player.save(self)
+		local data = player
+		return data
+	end
+
+	function player.draw(self)
 		love.graphics.draw(player.img, player.x, player.y, player.r, 1, 1, player.img:getWidth()/2, player.img:getHeight()/2)
 		
 		if col(Ui:get('mouse').x,Ui:get('mouse').y,0,0, player.x-100, player.y-100,200,200) then
@@ -41,7 +49,7 @@ function newPlayer(name, x, y, control, img)
 		-- love.graphics.print(math.floor(((player.x+player.img:getWidth()/2)-World:get('x'))/World:get('tileSize'))..", "..math.floor(((player.y+player.img:getHeight()/2)-World:get('y'))/World:get('tileSize')), 10, 70)
 	end
 
-	function player.update(dt)
+	function player.update(self, dt)
 		player.move(dt)
 
 		--playerTile
@@ -52,7 +60,7 @@ function newPlayer(name, x, y, control, img)
 		--World:getTile(math.floor((player.x-World:get('x'))/World:get('tileSize')), math.floor((player.y-World:get('y'))/World:get('tileSize')))
 	end
 
-	function player.mousepressed(x, y, button)
+	function player.mousepressed(self, x, y, button)
 		if button == 1 then
 			local tile = Ui:get('mouse').tile
 			if col(Ui:get('mouse').x,Ui:get('mouse').y,0,0, player.x-100, player.y-100,200,200) then
@@ -141,4 +149,8 @@ function newPlayer(name, x, y, control, img)
 	end
 
 	return player
+end
+
+function loadPlayer(saveFile)
+	return newPlayer(name, x, y, control, img)
 end

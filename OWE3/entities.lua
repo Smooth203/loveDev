@@ -10,9 +10,14 @@ local Items = require 'items'
 	-- animal (mob?) x
 
 Entities = {
+
+	get = function(self)
+		return self.entities
+	end,
+
 	load = function(self)
 		self.entities = {
-			newPlayer('p1', sw/2, sh/2, 'wasd', love.graphics.newImage('assets/player.png'))
+			newPlayer('p1', sw/2, sh/2, 'wasd', 'assets/player.png')
 		}
 		math.randomseed(os.time())
 		for x = 0, World:get('w') do
@@ -31,7 +36,7 @@ Entities = {
 	draw = function(self)
 		for i, e in ipairs(self.entities) do
 			if e.draw then
-				e.draw()
+				e:draw()
 			end
 		end
 		--love.graphics.rectangle('line', sw/3, sh/3, sw-2*(sw/3), sh-2*(sh/3))
@@ -40,10 +45,10 @@ Entities = {
 	update = function(self, dt)
 		for i, e in ipairs(self.entities) do
 			if e.update then
-				e.update(dt)
+				e:update(dt)
 			end
 			if e.collision then
-				e.collision(Entities:getPlayer())
+				e:collision(Entities:getPlayer())
 			end
 		end
 	end,
@@ -51,7 +56,7 @@ Entities = {
 	keypressed = function(self, key)
 		for i, e in ipairs(self.entities) do
 			if e.keypressed then
-				e.keypressed(key)
+				e:keypressed(key)
 			end
 		end
 	end,
@@ -60,7 +65,7 @@ Entities = {
 		local success = nil
 		for i, e in ipairs(self.entities) do
 			if e.action then
-				success = pcall(e.action, x,y,button,equipped)
+				success = pcall(e.action, self,x,y,button,equipped)
 				if success then
 					break
 				end
@@ -98,7 +103,7 @@ Entities = {
 	mousepressed = function(self, x, y, button)
 		for i, e in ipairs(self.entities) do
 			if e.mousepressed then
-				e.mousepressed(x,y,button)
+				e:mousepressed(x,y,button)
 			end
 		end
 	end

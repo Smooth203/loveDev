@@ -1,0 +1,1 @@
+x,501.33333333333;id,248598.329558;y,244.15255999845;speed,100;stoppedY,true;r,1.5707963267949;stoppedX,true;Type,player;control,table: 0x07685990;timer,74.368054199993;w,32;h,32;name,p1;imgPath,assets/player.png;

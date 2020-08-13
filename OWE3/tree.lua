@@ -8,6 +8,7 @@ local texture = {
 
 Structures['tree'] = function(id,x,y)
 		local tree = {}
+		tree.Type = 'structure'
 		tree.health = 100
 		tree.chopped = false
 		tree.id = tostring(id)
@@ -18,13 +19,13 @@ Structures['tree'] = function(id,x,y)
 		tree.h = texture.h
 
 
-		function tree.draw()
+		function tree.draw(self)
 			love.graphics.draw(World:get('tileset'), tree.quad,
 				math.floor(World:get('x')+(tree.x*World:get('tileSize'))),
 				math.floor(World:get('y')+(tree.y*World:get('tileSize')))
 				)
 		end
-		function tree.action(x,y,button,equipped)
+		function tree.action(self,x,y,button,equipped)
 			if col(x,y,0,0, math.floor(World:get('x')+(tree.x*World:get('tileSize'))),math.floor(World:get('y')+(tree.y*World:get('tileSize'))),tree.w*World:get('tileSize'),tree.h*World:get('tileSize')) then
 
 				local dmgMultiplier = 1
@@ -48,10 +49,10 @@ Structures['tree'] = function(id,x,y)
 				error()
 			end
 		end
-		function tree.update(dt)
+		function tree.update(self,dt)
 
 		end
-		function tree.mousepressed(x,y,button)
+		function tree.mousepressed(self,x,y,button)
 
 		end
 
