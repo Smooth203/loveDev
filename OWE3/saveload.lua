@@ -1,29 +1,22 @@
 function save()
 
-	local entities = Entities:get()
-	
+	local saveDataRaw = {
+		Entities:get()
+	}
+
+
+	local saveData = TSerial.pack(saveDataRaw, 0, true)
+
 	local file = io.open('save.txt', 'w')
-
-	local saveString = ""
-
-	for i, e in ipairs(entities) do
-		if e.save then
-			local save = e:save()
-			for j,v in pairs(save) do
-				if type(v) ~= 'function' and type(v) ~= 'userdata' then
-					file:write(j..","..tostring(v)..";")
-				end
-			end
-		end
-	end
-
+	file:write(saveData)
 	io.close(file)
 
-	--load
+end
+
+function load()
 	local file = io.open('save.txt', 'r')
-	for a in file:read():gmatch('([^,]*);') do
-		print(a)
-	end
-
+	local rawData = TSerial.unpack(file:read("*all"), true)
 	io.close(file)
+
+	Entities:load(rawData[1])
 end

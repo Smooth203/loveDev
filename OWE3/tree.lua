@@ -7,25 +7,41 @@ local texture = {
 }
 
 Structures['tree'] = function(id,x,y)
-		local tree = {}
-		tree.Type = 'structure'
-		tree.health = 100
-		tree.chopped = false
-		tree.id = tostring(id)
-		tree.quad = love.graphics.newQuad(texture.x*World:get('tileSize'), texture.y*World:get('tileSize'), texture.w*World:get('tileSize'), texture.h*World:get('tileSize'), World:get('tileset'):getWidth(), World:get('tileset'):getHeight())
-		tree.x = x
-		tree.y = y
-		tree.w = texture.w
-		tree.h = texture.h
+	local tree = {}
+	tree.Type = 'structure'
+	tree.name = 'tree'
+	tree.health = 100
+	tree.chopped = false
+	tree.id = tostring(id)
+	tree.quad = love.graphics.newQuad(texture.x*World:get('tileSize'), texture.y*World:get('tileSize'), texture.w*World:get('tileSize'), texture.h*World:get('tileSize'), World:get('tileset'):getWidth(), World:get('tileset'):getHeight())
+	tree.x = x
+	tree.y = y
+	tree.w = texture.w
+	tree.h = texture.h
 
+	--treetop
+	local top = {}
+	top.id = tostring(id) .. "TOP"
+	top.name = 'top'
+	top.quad = love.graphics.newQuad(9*World:get('tileSize'), 15*World:get('tileSize'), 3*World:get('tileSize'), 3*World:get('tileSize'), World:get('tileset'):getWidth(), World:get('tileset'):getHeight())
+	top.x = x
+	top.y = y - 1
+	top.w = 3
+	top.h = 2
 
-		function tree.draw(self)
+	return tree, top
+end
+
+Structures['tree'].funcs = function(name)
+	local funcs = {}
+	if name == 'tree' then
+		function funcs.draw(self)
 			love.graphics.draw(World:get('tileset'), tree.quad,
 				math.floor(World:get('x')+(tree.x*World:get('tileSize'))),
 				math.floor(World:get('y')+(tree.y*World:get('tileSize')))
 				)
 		end
-		function tree.action(self,x,y,button,equipped)
+		function funcs.action(self,x,y,button,equipped)
 			if col(x,y,0,0, math.floor(World:get('x')+(tree.x*World:get('tileSize'))),math.floor(World:get('y')+(tree.y*World:get('tileSize'))),tree.w*World:get('tileSize'),tree.h*World:get('tileSize')) then
 
 				local dmgMultiplier = 1
@@ -49,27 +65,19 @@ Structures['tree'] = function(id,x,y)
 				error()
 			end
 		end
-		function tree.update(self,dt)
+		function funcs.update(self,dt)
 
 		end
-		function tree.mousepressed(self,x,y,button)
+		function funcs.mousepressed(self,x,y,button)
 
 		end
-
-		--treetop
-		local top = {}
-		top.id = tostring(id) .. "TOP"
-		top.quad = love.graphics.newQuad(9*World:get('tileSize'), 15*World:get('tileSize'), 3*World:get('tileSize'), 3*World:get('tileSize'), World:get('tileset'):getWidth(), World:get('tileset'):getHeight())
-		top.x = x
-		top.y = y - 1
-		top.w = 3
-		top.h = 2
-		function top.draw()
+	elseif name == 'top' then
+		function funcs.draw()
 			love.graphics.draw(World:get('tileset'), top.quad,
 				math.floor(World:get('x')+(top.x*World:get('tileSize'))),
 				math.floor(World:get('y')+(top.y*World:get('tileSize')))
 				)
 		end
-
-		return tree, top
+	end
+	return funcs
 end

@@ -1,5 +1,6 @@
 io.stdout:setvbuf("no") -- live console for ST3
 
+require 'TSerial'
 require 'world'
 require 'entities'
 require 'ui'
@@ -8,10 +9,15 @@ require 'saveload'
 function love.load()
 	sw, sh = love.graphics.getDimensions()
 	math.randomseed(os.time())
+	local game = 'load'
 
-	World:load()
-	Entities:load()
-	Ui:load()
+	if game == 'load' then
+		load()
+	else
+		Entities:new()
+	end
+		World:load()
+		Ui:load()
 end
 
 function love.draw()

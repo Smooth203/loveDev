@@ -15,7 +15,14 @@ Entities = {
 		return self.entities
 	end,
 
-	load = function(self)
+	load = function(self, e)
+		self.entities = e
+		for i, e in ipairs(self.entities) do
+			e.funcs = getFuncs(e.name)
+		end
+	end,
+
+	new = function(self)
 		self.entities = {
 			newPlayer('p1', sw/2, sh/2, 'wasd', 'assets/player.png')
 		}
