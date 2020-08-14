@@ -18,7 +18,11 @@ Entities = {
 	load = function(self, e)
 		self.entities = e
 		for i, e in ipairs(self.entities) do
-			e.funcs = getFuncs(e.name)
+			if e.Type == 'structure' then
+				structures.getUnsaveables(e, e.name)
+			elseif e.Type == 'player' then
+				player_getUnsaveables(e)
+			end
 		end
 	end,
 

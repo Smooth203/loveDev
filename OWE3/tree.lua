@@ -6,7 +6,61 @@ local texture = {
 	h = 2
 }
 
-Structures['tree'] = function(id,x,y)
+getUnsaveables = function(t, name)
+	if name == 'tree' then
+
+		t.quad = love.graphics.newQuad(texture.x*World:get('tileSize'), texture.y*World:get('tileSize'), texture.w*World:get('tileSize'), texture.h*World:get('tileSize'), World:get('tileset'):getWidth(), World:get('tileset'):getHeight())
+
+		function t.draw(self)
+			love.graphics.draw(World:get('tileset'), t.quad,
+				math.floor(World:get('x')+(t.x*World:get('tileSize'))),
+				math.floor(World:get('y')+(t.y*World:get('tileSize')))
+				)
+		end
+		function t.action(self,x,y,button,equipped)
+			if col(x,y,0,0, math.floor(World:get('x')+(t.x*World:get('tileSize'))),math.floor(World:get('y')+(t.y*World:get('tileSize'))),t.w*World:get('tileSize'),t.h*World:get('tileSize')) then
+
+				local dmgMultiplier = 1
+
+				if equipped.item.name then
+					dmgMultiplier = equipped.item.equip.dmgMultiplier
+				end
+
+				if t.health > 0 then
+					t.health = t.health - 1 * dmgMultiplier
+					print('Tree Damaged', t.health)
+				end
+				if t.health <= 0 and not t.chopped then
+					Entities:removeEntity(t.id.."TOP")
+					Ui:addItem('wood', 'inv')
+					print('Tree Chopped')
+					t.chopped = true
+				end
+
+			else
+				error()
+			end
+		end
+		function t.update(self,dt)
+
+		end
+		function t.mousepressed(self,x,y,button)
+
+		end
+	elseif name == 'top' then
+
+		t.quad = love.graphics.newQuad(9*World:get('tileSize'), 15*World:get('tileSize'), 3*World:get('tileSize'), 3*World:get('tileSize'), World:get('tileset'):getWidth(), World:get('tileset'):getHeight())
+
+		function t.draw()
+			love.graphics.draw(World:get('tileset'), t.quad,
+				math.floor(World:get('x')+(t.x*World:get('tileSize'))),
+				math.floor(World:get('y')+(t.y*World:get('tileSize')))
+				)
+		end
+	end
+end
+
+structures['tree'] = function(id,x,y)
 	local tree = {}
 	tree.Type = 'structure'
 	tree.name = 'tree'
@@ -18,9 +72,11 @@ Structures['tree'] = function(id,x,y)
 	tree.y = y
 	tree.w = texture.w
 	tree.h = texture.h
+	getUnsaveables(tree, 'tree')
 
 	--treetop
 	local top = {}
+	top.Type = 'structure'
 	top.id = tostring(id) .. "TOP"
 	top.name = 'top'
 	top.quad = love.graphics.newQuad(9*World:get('tileSize'), 15*World:get('tileSize'), 3*World:get('tileSize'), 3*World:get('tileSize'), World:get('tileset'):getWidth(), World:get('tileset'):getHeight())
@@ -28,56 +84,8 @@ Structures['tree'] = function(id,x,y)
 	top.y = y - 1
 	top.w = 3
 	top.h = 2
+	getUnsaveables(top, 'top')
+
 
 	return tree, top
-end
-
-Structures['tree'].funcs = function(name)
-	local funcs = {}
-	if name == 'tree' then
-		function funcs.draw(self)
-			love.graphics.draw(World:get('tileset'), tree.quad,
-				math.floor(World:get('x')+(tree.x*World:get('tileSize'))),
-				math.floor(World:get('y')+(tree.y*World:get('tileSize')))
-				)
-		end
-		function funcs.action(self,x,y,button,equipped)
-			if col(x,y,0,0, math.floor(World:get('x')+(tree.x*World:get('tileSize'))),math.floor(World:get('y')+(tree.y*World:get('tileSize'))),tree.w*World:get('tileSize'),tree.h*World:get('tileSize')) then
-
-				local dmgMultiplier = 1
-
-				if equipped.item.name then
-					dmgMultiplier = equipped.item.equip.dmgMultiplier
-				end
-
-				if tree.health > 0 then
-					tree.health = tree.health - 1 * dmgMultiplier
-					print('Tree Damaged', tree.health)
-				end
-				if tree.health <= 0 and not tree.chopped then
-					Entities:removeEntity(tree.id.."TOP")
-					Ui:addItem('wood', 'inv')
-					print('Tree Chopped')
-					tree.chopped = true
-				end
-
-			else
-				error()
-			end
-		end
-		function funcs.update(self,dt)
-
-		end
-		function funcs.mousepressed(self,x,y,button)
-
-		end
-	elseif name == 'top' then
-		function funcs.draw()
-			love.graphics.draw(World:get('tileset'), top.quad,
-				math.floor(World:get('x')+(top.x*World:get('tileSize'))),
-				math.floor(World:get('y')+(top.y*World:get('tileSize')))
-				)
-		end
-	end
-	return funcs
 end

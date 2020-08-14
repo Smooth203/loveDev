@@ -1,37 +1,6 @@
-function newPlayer(name, x, y, control, imgPath)
+function player_getUnsaveables(player)
 
-	if control == 'wasd' then
-		up = 'w'
-		left = 'a'
-		down = 's'
-		right = 'd'
-	elseif control == 'arrow' then
-		up = 'up'
-		left = 'left'
-		down = 'down'
-		right = 'right'
-	end
-
-	local player = {
-		id = love.timer.getTime(),
-		Type = 'player',
-		name = name,
-		x = x,
-		y = y,
-		speed = 100,
-		control = {
-			up = up,
-			left = left,
-			down = down,
-			right = right
-		},
-		imgPath = imgPath,
-		img = love.graphics.newImage(imgPath),
-		r = 0,
-		timer = 100
-	}
-	player.w = player.img:getWidth()
-	player.h = player.img:getHeight()
+	player.img = love.graphics.newImage(player.imgPath)
 
 	function player.save(self)
 		local data = player
@@ -147,10 +116,45 @@ function newPlayer(name, x, y, control, imgPath)
 			World:move(0, player.speed * dt)
 		end
 	end
-
-	return player
 end
 
-function loadPlayer(saveFile)
-	return newPlayer(name, x, y, control, img)
+
+function newPlayer(name, x, y, control, imgPath)
+
+	if control == 'wasd' then
+		up = 'w'
+		left = 'a'
+		down = 's'
+		right = 'd'
+	elseif control == 'arrow' then
+		up = 'up'
+		left = 'left'
+		down = 'down'
+		right = 'right'
+	end
+
+	local player = {
+		id = love.timer.getTime(),
+		Type = 'player',
+		name = name,
+		x = x,
+		y = y,
+		speed = 100,
+		control = {
+			up = up,
+			left = left,
+			down = down,
+			right = right
+		},
+		imgPath = imgPath,
+		img = love.graphics.newImage(imgPath),
+		r = 0,
+		timer = 100
+	}
+	player.w = player.img:getWidth()
+	player.h = player.img:getHeight()
+
+	player_getUnsaveables(player)
+
+	return player
 end

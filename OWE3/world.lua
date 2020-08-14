@@ -1,6 +1,19 @@
 World = {
 	get = function(self, p)
-		if p == 'x' then
+		if p == 'all' or p == nil then	
+			local worldInfo = {
+				{
+					x = self.x,
+					y = self.y,
+					w = self.w,
+					h = self.h
+				},
+				{
+					tiles = self.world
+				}
+			}
+			return worldInfo
+		elseif p == 'x' then
 			return self.x
 		elseif p == 'y' then
 			return self.y
@@ -15,7 +28,28 @@ World = {
 		end
 	end,
 
-	load = function(self)
+	load = function(self, world, info)
+		self.x = info.x
+		self.y = info.y
+		self.w = info.w
+		self.h = info.h
+		self.world = world
+		
+		self.active = true
+		self.Textures = require 'textures'
+		self.tileset = love.graphics.newImage('assets/tileset.png')
+		self.batch = love.graphics.newSpriteBatch(self.tileset, self.w*self.h)
+		self.tileSize = 32
+		--quads
+		self.quads = {}
+		for _, texture in pairs(textures) do
+			local t = texture
+			self.quads[t.value] = love.graphics.newQuad(t.x*self.tileSize, t.y*self.tileSize, self.tileSize, self.tileSize, self.tileset:getWidth(), self.tileset:getHeight())
+		end
+		World:updateWorld()
+	end,
+
+	new = function(self)
 		self.active = true
 		self.Textures = require 'textures'
 		self.tileset = love.graphics.newImage('assets/tileset.png')
@@ -105,8 +139,8 @@ World = {
 	updateWorld = function (self)
 		self.batch:clear()
 
-		for x = 0, self.w do
-			for y = 0, self.h do
+		for x = 1, self.w do
+			for y = 1, self.h do
 				local tile = self.world[x][y]
 				id = self.batch:add(self.quads[tile.texture], x*self.tileSize, y*self.tileSize)
 			end

@@ -1,11 +1,11 @@
-Structures = {}
+structures = {}
 
 local tree = require 'tree'
 
 function newStructure(id, name, x, y)
-	return Structures[name](id, x, y)
+	return structures[name](id, x, y)
 end
 
-function getFuncs(name)
-	return Structures[name].funcs()
+function structures.getUnsaveables(t, name)
+	return getUnsaveables(t, name)
 end
