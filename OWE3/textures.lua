@@ -22,5 +22,11 @@ textures = {
 		value = 3,
 		x = 6,
 		y = 18
-	}
+	},
+	{
+		name = 'water',
+		value = 4,
+		x = 9,
+		y = 19
+	},
 }

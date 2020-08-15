@@ -9,7 +9,9 @@ Ui = {
 		end
 	end,
 
-	load = function(self)
+	loadUnsaveables = function(self)
+		self.inv = {}
+		self.invSlotSize = 80
 		self.mouse = {
 			x = love.mouse.getX(),
 			y = love.mouse.getY(),
@@ -17,9 +19,11 @@ Ui = {
 			tileY = math.floor(((love.mouse.getY())-World:get('y'))/World:get('tileSize')),
 			tile = {}
 		}
+	end,
+
+	new = function(self)
+		Ui:loadUnsaveables()
 		--Inv & Equipped
-		self.inv = {}
-		self.invSlotSize = 80
 		for i = 1, 5 do
 			local slot = {
 				location = 'inv',
@@ -36,6 +40,20 @@ Ui = {
 			showOptions = false,
 			item = {}
 		}
+	end,
+
+	load = function(self, inv, equipped)
+		Ui:loadUnsaveables()
+		self.inv = inv
+		for i, slot in pairs(self.inv) do
+			if slot.item.name then
+				slot.item.img = love.graphics.newImage(slot.item.imgPath)
+			end
+		end
+		self.equipped = equipped
+		if self.equipped.item.name then
+			self.equipped.item.img = love.graphics.newImage(self.equipped.item.imgPath)
+		end
 	end,
 
 	draw = function(self)
@@ -83,12 +101,25 @@ Ui = {
 			love.graphics.print('Un-Equip', sw-self.invSlotSize, sh-self.invSlotSize-(self.invSlotSize/2)*3)
 		end
 
+		if paused then
+			love.graphics.setColor(0.4,0.4,0.4,0.5)
+			love.graphics.rectangle('fill', 0,0,sw,sh)
+			love.graphics.setColor(1,1,1,1)
+			love.graphics.rectangle('fill', (sw/2)-100, (sh/2)-50, 200, 100)
+			love.graphics.setColor(0,0,0,1)
+			love.graphics.setFont(titleFont)
+			love.graphics.print('Save & Quit', ((sw/2)-titleFont:getWidth('Save & Quit')/2),((sh/2)-titleFont:getHeight('Save & Quit')/2))
+			love.graphics.setFont(font)
+		end
+
 		love.graphics.setColor(1,1,1,1)
 
 	end,
 
 	update = function(self, dt)
-		Ui:updateMouse()
+		if not paused then
+			Ui:updateMouse()
+		end
 	end,
 
 	updateMouse = function(self)
@@ -99,62 +130,84 @@ Ui = {
 
 	mousepressed = function(self, x, y, button)
 		if button == 1 then
-			--Inv
-			for i, slot in ipairs(self.inv) do
-				local slotX, slotY = (sw/2)-(self.invSlotSize*(#self.inv/2))+((i-1)*self.invSlotSize), sh-self.invSlotSize
-				if col(x,y,0,0, slotX, slotY, self.invSlotSize, self.invSlotSize) then
-					--inv
-					if slot.isEmpty == false then
-						if slot.showOptions == true then
-							slot.showOptions = false
+			if not paused then
+				--Inv
+				for i, slot in ipairs(self.inv) do
+					local slotX, slotY = (sw/2)-(self.invSlotSize*(#self.inv/2))+((i-1)*self.invSlotSize), sh-self.invSlotSize
+					if col(x,y,0,0, slotX, slotY, self.invSlotSize, self.invSlotSize) then
+						--inv
+						if slot.isEmpty == false then
+							if slot.showOptions == true then
+								slot.showOptions = false
+							else
+								for i, slot in pairs(self.inv) do
+									slot.showOptions = false
+								end
+								slot.showOptions = true
+							end
+						end
+					elseif col(x,y,0,0, slotX, slotY-(self.invSlotSize/2), self.invSlotSize, self.invSlotSize/2) and slot.showOptions == true then
+						Ui:dropItem(slot)
+						print('Dropped')
+					elseif col(x,y,0,0, slotX, slotY-(self.invSlotSize/2)*2, self.invSlotSize, self.invSlotSize/2) and slot.showOptions == true then
+						print('Used')
+					elseif col(x,y,0,0, slotX, slotY-(self.invSlotSize/2)*3, self.invSlotSize, self.invSlotSize/2) and slot.showOptions == true then
+						if slot.item.equip then
+							Ui:swapItem(slot, self.equipped)
+							print('Equipped')
 						else
-							slot.showOptions = true
+							print('Not Equippable')
 						end
 					end
-				elseif col(x,y,0,0, slotX, slotY-(self.invSlotSize/2), self.invSlotSize, self.invSlotSize/2) and slot.showOptions == true then
-					Ui:dropItem(slot)
-					print('Dropped')
-				elseif col(x,y,0,0, slotX, slotY-(self.invSlotSize/2)*2, self.invSlotSize, self.invSlotSize/2) and slot.showOptions == true then
-					print('Used')
-				elseif col(x,y,0,0, slotX, slotY-(self.invSlotSize/2)*3, self.invSlotSize, self.invSlotSize/2) and slot.showOptions == true then
-					if slot.item.equip then
-						Ui:swapItem(slot, self.equipped)
-						print('Equipped')
+				end
+				--equip
+				if col(x,y,0,0, sw-self.invSlotSize, sh-self.invSlotSize, self.invSlotSize, self.invSlotSize) then
+					--EquippedOptions
+					if self.equipped.showOptions == true then
+						self.equipped.showOptions = false
 					else
-						print('Not Equippable')
+						self.equipped.showOptions = true
 					end
+				elseif col(x,y,0,0, sw-self.invSlotSize, sh-self.invSlotSize-(self.invSlotSize/2), self.invSlotSize, self.invSlotSize/2) and self.equipped.showOptions == true then
+					Ui:dropItem(self.equipped)
+					print('Dropped')
+				elseif col(x,y,0,0, sw-self.invSlotSize, sh-self.invSlotSize-(self.invSlotSize/2)*2, self.invSlotSize, self.invSlotSize/2) and self.equipped.showOptions == true then
+					print('Used')
+				elseif col(x,y,0,0, sw-self.invSlotSize, sh-self.invSlotSize-(self.invSlotSize/2)*3, self.invSlotSize, self.invSlotSize/2) and self.equipped.showOptions == true then
+
+					--Ui:swapItem(self.equipped, 'inv', string.lower(self.equipped.item.name))
+					Ui:unequip()
+					print('Un-Equipped')
+				end
+			else
+				if col(x,y,0,0, (sw/2)-100,(sh/2)-50,200,100) then
+					save()
+					love.event.quit()
 				end
 			end
-			--equip
-			if col(x,y,0,0, sw-self.invSlotSize, sh-self.invSlotSize, self.invSlotSize, self.invSlotSize) then
-				--EquippedOptions
-				if self.equipped.showOptions == true then
-					self.equipped.showOptions = false
-				else
-					self.equipped.showOptions = true
-				end
-			elseif col(x,y,0,0, sw-self.invSlotSize, sh-self.invSlotSize-(self.invSlotSize/2), self.invSlotSize, self.invSlotSize/2) and self.equipped.showOptions == true then
-				Ui:dropItem(self.equipped)
-				print('Dropped')
-			elseif col(x,y,0,0, sw-self.invSlotSize, sh-self.invSlotSize-(self.invSlotSize/2)*2, self.invSlotSize, self.invSlotSize/2) and self.equipped.showOptions == true then
-				print('Used')
-			elseif col(x,y,0,0, sw-self.invSlotSize, sh-self.invSlotSize-(self.invSlotSize/2)*3, self.invSlotSize, self.invSlotSize/2) and self.equipped.showOptions == true then
+		end
+	end,
 
-				--Ui:swapItem(self.equipped, 'inv', string.lower(self.equipped.item.name))
-				Ui:unequip()
-				print('Un-Equipped')
+	keypressed = function(self, key)
+		if key == 'escape' then
+			if paused then
+				paused = false
+			else
+				paused = true
 			end
 		end
 	end,
 
 	addItem = function(self, item, to, toSlot)
 		local item = items[item]
+		local img = love.graphics.newImage(item.imgPath)
 		local complete = false
 		if to == 'inv' then
 			if toSlot == nil then
 				for i, slot in ipairs(self.inv) do
 					if slot.isEmpty then
 						slot.item = item
+						slot.item.img = img
 						slot.isEmpty = false
 						complete = true
 						break
@@ -163,11 +216,13 @@ Ui = {
 			else
 				if item then
 					self.inv[toSlot].item = item
+					self.inv[toSlot].item.img = img
 					self.inv[toSlot].isEmpty = false
 				end
 			end
 		elseif to == 'equipped' then
 			self.equipped.item = item
+			self.equipped.item.img = img
 			complete = true
 		end
 		if complete then

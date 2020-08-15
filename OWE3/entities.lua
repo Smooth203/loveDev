@@ -33,12 +33,14 @@ Entities = {
 		math.randomseed(os.time())
 		for x = 0, World:get('w') do
 			for y = 0, World:get('h') do
-				local r = math.random(0, 100)
-				if r == 0 then
-					local id = love.timer.getTime()
-					local tree, top = newStructure(id, 'tree', x, y)
-					table.insert(self.entities, 1, tree)
-					table.insert(self.entities, top)
+				if World:getTile(x,y).texture ~= 4 then
+					local r = math.random(0, 100)
+					if r == 0 then
+						local id = love.timer.getTime()
+						local tree, top = newStructure(id, 'tree', x, y)
+						table.insert(self.entities, 1, tree)
+						table.insert(self.entities, top)
+					end
 				end
 			end
 		end

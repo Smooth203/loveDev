@@ -1,3 +1,6 @@
+local Noise = require 'noise'
+local scale = 10
+
 World = {
 	get = function(self, p)
 		if p == 'all' or p == nil then	
@@ -55,8 +58,8 @@ World = {
 		self.tileset = love.graphics.newImage('assets/tileset.png')
 		self.tileSize = 32
 
-		self.x = -6000
-		self.y = -399
+		self.x = 0 -- -6000
+		self.y = 0 -- -399
 		self.w = 500
 		self.h = 500
 		self.world = {}
@@ -71,28 +74,54 @@ World = {
 			self.quads[t.value] = love.graphics.newQuad(t.x*self.tileSize, t.y*self.tileSize, self.tileSize, self.tileSize, self.tileset:getWidth(), self.tileset:getHeight())
 		end
 		for x = 0, self.w do
-			self.world[x] = {}
 			for y = 0, self.h do
-				local r = math.random(0, 100)
+				distX =	math.abs(x-(self.w * 0.5)-0)
+				distY = math.abs(y-(self.h * 0.5)-0)
+				dist = math.sqrt((distX*distX) + (distY*distY)) -- circular
+				maxW = self.w * 0.5 - 10
+				delta = dist / maxW
+				gradient = delta * delta
+
+				self.world[x] = self.world[x] or {}
+				xCoord = x/self.w * scale
+				yCoord = y/self.h * scale
+				zCoord = scale
+				Noise = love.math.noise(xCoord,yCoord,zCoord)* pickMax(0, 1-gradient)
 				local tex = 2
-				if r == 0 then
-					tex = 1
-				elseif r == 4 then
-					tex = 3
+				if Noise < 0.3 then
+					tex = 4
 				end
 				self.world[x][y] = {
 					x = x,
-					y = y,
-					texture = tex
+					y = y,					
+					texture = tex,
 				}
 			end
 		end
+		-- for x = 0, self.w do
+		-- 	self.world[x] = {}
+		-- 	for y = 0, self.h do
+		-- 		local r = math.random(0, 100)
+		-- 		local tex = 2
+		-- 		if r == 0 then
+		-- 			tex = 1
+		-- 		elseif r == 4 then
+		-- 			tex = 3
+		-- 		end
+		-- 		self.world[x][y] = {
+		-- 			x = x,
+		-- 			y = y,
+		-- 			texture = tex
+		-- 		}
+		-- 	end
+		-- end
 
 		World:updateWorld()
 	end,
 
 	draw = function(self)
-		love.graphics.draw(self.batch, math.floor(self.x), math.floor(self.y))
+		love.graphics.draw(self.batch, math.floor(self.x), math.floor(self.y), 0,  1, 1)
+		--slove.graphics.draw(drawable, x, y, r, sx, sy, ox, oy, kx, ky)
 	end,
 
 	update = function (self, dt)

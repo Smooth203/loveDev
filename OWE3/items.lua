@@ -1,7 +1,7 @@
 items = {
 	-- example = {
 	-- 	name = 'Example',
-	-- 	img = love.graphics.newImage('assets/example.png'),
+	-- 	imgPath = 'assets/example.png',
 	-- 	equip = {
 	-- 		dmgMultiplier = 1,
 	-- 		attackMultiplier = 1
@@ -9,7 +9,7 @@ items = {
 	-- },
 	flower = {
 		name = 'Flower',
-		img = love.graphics.newImage('assets/flower.png'),
+		imgPath = 'assets/flower.png',
 		equip = {
 			dmgMultiplier = 25,
 			attackMultiplier = 1
@@ -17,7 +17,7 @@ items = {
 	},
 	wood = {
 		name = 'Wood',
-		img = love.graphics.newImage('assets/wood.png')
+		imgPath = 'assets/wood.png'
 	}
 }
 
@@ -31,6 +31,7 @@ function newItem(item, x, y)
 			self.x = x
 			self.y = y
 			self.data = itemData
+			self.data.img = love.graphics.newImage(self.data.imgPath)
 			self.tile = World:getTile(math.floor(((x)-World:get('x'))/World:get('tileSize')),math.floor(((y)-World:get('y'))/World:get('tileSize')))
 			self.collisions = {
 				inRadius = false

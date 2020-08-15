@@ -1,14 +1,14 @@
-local smallfolk = require 'smallfolk'
 require 'TSerial'
 
 function save()
 
-	
-
+	print('SAVING..')
+	--local inv, equipped = Ui:get('inv')
 
 	local saveDataRaw = {
-		Entities:get(),
-		World:get()[1] -- info like x,y etc
+		Entities:get(), -- index:1
+		World:get()[1], -- info like x,y etc index:2
+		Ui:get('inv'), -- inv etc index:3&4 (inv&equip)
 	}
 	local saveData = TSerial.pack(saveDataRaw, 0, true)
 	local file = io.open('save/save.txt', 'w')
@@ -46,9 +46,11 @@ function save()
 		file:write(worldData)
 		io.close(file)
 	end
+	print('SAVED!')
 end
 
-function load()
+loadGame = function()
+	print('LOADING..')
 	--get world tile data
 	local world = {}
 	for i = 1, 5 do
@@ -59,12 +61,13 @@ function load()
 			table.insert(world, tile)
 		end
 	end
-	--get entities and world info
+	--get entities, inv&equipped, and world info
 	local file = io.open('save/save.txt', 'r')
 	local rawData = TSerial.unpack(file:read("*all"), true)
 	io.close(file)
 
 	World:load(world, rawData[2])
 	Entities:load(rawData[1])
-
+	Ui:load(rawData[3], rawData[4])
+	print('LOADED!')
 end
