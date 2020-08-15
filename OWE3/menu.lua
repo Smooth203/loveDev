@@ -58,7 +58,6 @@ Menu = {
 				if s then
 					gameState = button.state
 				end
-				print(s,e)
 			end
 		end
 	end,

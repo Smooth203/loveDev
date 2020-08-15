@@ -6,7 +6,7 @@ local Items = require 'items'
 -- / done, x not done
 	-- player /
 	-- structure /
-	-- droppedItem x
+	-- droppedItem /
 	-- animal (mob?) x
 
 Entities = {

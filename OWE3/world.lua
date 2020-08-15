@@ -28,6 +28,8 @@ World = {
 			return self.tileSize
 		elseif p == 'tileset' then
 			return self.tileset
+		elseif p == 'batch' then
+			return self.batch
 		end
 	end,
 
@@ -58,8 +60,8 @@ World = {
 		self.tileset = love.graphics.newImage('assets/tileset.png')
 		self.tileSize = 32
 
-		self.x = 0 -- -6000
-		self.y = 0 -- -399
+		self.x = 0
+		self.y = 0
 		self.w = 500
 		self.h = 500
 		self.world = {}
@@ -73,6 +75,7 @@ World = {
 			local t = texture
 			self.quads[t.value] = love.graphics.newQuad(t.x*self.tileSize, t.y*self.tileSize, self.tileSize, self.tileSize, self.tileset:getWidth(), self.tileset:getHeight())
 		end
+		--WORLD GEN
 		for x = 0, self.w do
 			for y = 0, self.h do
 				distX =	math.abs(x-(self.w * 0.5)-0)
@@ -86,10 +89,22 @@ World = {
 				xCoord = x/self.w * scale
 				yCoord = y/self.h * scale
 				zCoord = scale
-				Noise = love.math.noise(xCoord,yCoord,zCoord)* pickMax(0, 1-gradient)
+				Noise = love.math.noise(xCoord+love.timer.getTime(),yCoord+love.timer.getTime(),zCoord)* pickMax(0, 1-gradient)
 				local tex = 2
-				if Noise < 0.3 then
+				if Noise <= 0.26 then
 					tex = 4
+				elseif Noise > 0.26 and Noise <= 0.3 then
+					tex = 5
+				end
+				if tex ~= 4 then
+					local rn = love.math.random(1,100)
+					if rn == 1 then
+						tex = 3
+					elseif rn == 2 then
+						tex = 6
+					elseif rn == 3 then
+						tex = 7
+					end
 				end
 				self.world[x][y] = {
 					x = x,
@@ -98,24 +113,6 @@ World = {
 				}
 			end
 		end
-		-- for x = 0, self.w do
-		-- 	self.world[x] = {}
-		-- 	for y = 0, self.h do
-		-- 		local r = math.random(0, 100)
-		-- 		local tex = 2
-		-- 		if r == 0 then
-		-- 			tex = 1
-		-- 		elseif r == 4 then
-		-- 			tex = 3
-		-- 		end
-		-- 		self.world[x][y] = {
-		-- 			x = x,
-		-- 			y = y,
-		-- 			texture = tex
-		-- 		}
-		-- 	end
-		-- end
-
 		World:updateWorld()
 	end,
 
@@ -131,6 +128,11 @@ World = {
 	move = function(self, dx, dy)
 		self.x = self.x + dx
 		self.y = self.y + dy
+	end,
+
+	moveTo = function(self, x, y)
+		self.x = x
+		self.y = y
 	end,
 
 	getTile = function(self, tx, ty)

@@ -29,4 +29,22 @@ textures = {
 		x = 9,
 		y = 19
 	},
+	{
+		name = 'beach',
+		value = 5,
+		x = 5,
+		y = 15
+	},
+	{
+		name = 'smallRock',
+		value = 6,
+		x = 5,
+		y = 19
+	},
+	{
+		name = 'bigRock',
+		value = 7,
+		x = 4,
+		y = 18
+	},
 }

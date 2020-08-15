@@ -133,6 +133,26 @@ function newPlayer(name, x, y, control, imgPath)
 		right = 'right'
 	end
 
+	local tmpTiles = {}
+	while not canSpawn do
+		for mx = 0, World:get('w') do
+			for my = 0, World:get('h') do
+				if World:getTile(mx,my).texture ~= 4 then
+					local tile = {x = mx, y = my}
+					table.insert(tmpTiles, tile)
+					canSpawn = true
+				end
+			end
+		end
+	end
+	local rn = love.math.random(1, #tmpTiles)
+	for i, tile in pairs(tmpTiles) do
+		if i == rn then
+			posx = tile.x
+			posy = tile.y
+		end
+	end
+
 	local player = {
 		id = love.timer.getTime(),
 		Type = 'player',
@@ -155,6 +175,7 @@ function newPlayer(name, x, y, control, imgPath)
 	player.h = player.img:getHeight()
 
 	player_getUnsaveables(player)
+	World:moveTo(-posx*World:get('tileSize'), -posy*World:get('tileSize'))
 
 	return player
 end

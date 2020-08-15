@@ -31,6 +31,9 @@ function love.draw()
 		World:draw()
 		Entities:draw()
 		Ui:draw()
+
+		love.graphics.draw(World:get('batch'), 0,0, 0,  0.01, 0.01)
+		love.graphics.draw(Entities:getPlayer().img, (Entities:getPlayer().x-(World:get('x')))*0.01, (Entities:getPlayer().y-(World:get('y')))*0.01, 0, 0.1, 0.1)
 	else
 		Menu:draw()
 	end
