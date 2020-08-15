@@ -11,14 +11,30 @@ items = {
 		name = 'Flower',
 		imgPath = 'assets/flower.png',
 		equip = {
-			dmgMultiplier = 25,
+			dmgMultiplier = 1,
 			attackMultiplier = 1
 		}
 	},
 	wood = {
 		name = 'Wood',
 		imgPath = 'assets/wood.png'
-	}
+	},
+	stick = {
+		name = 'Stick',
+		imgPath = 'assets/stick.png',
+		equip = {
+			dmgMultiplier = 1,
+			attackMultiplier = 1.15
+		}
+	},
+	rock = {
+		name = 'Rock',
+		imgPath = 'assets/rock.png',
+		equip = {
+			dmgMultiplier = 2,
+			attackMultiplier = 2
+		}
+	},
 }
 
 function newItem(item, x, y)

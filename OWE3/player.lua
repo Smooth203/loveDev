@@ -40,6 +40,10 @@ function player_getUnsaveables(player)
 						if Ui:addItem('flower', 'inv') then
 							World:setTile(tile.x, tile.y, 1)
 						end
+					elseif tile.texture == 6 then
+						if Ui:addItem('rock', 'inv') then
+							World:setTile(tile.x, tile.y, 1)
+						end
 					end
 				end
 			end

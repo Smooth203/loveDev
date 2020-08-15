@@ -30,6 +30,8 @@ World = {
 			return self.tileset
 		elseif p == 'batch' then
 			return self.batch
+		elseif p == 'heightmap' then
+			return self.heightmap
 		end
 	end,
 
@@ -89,21 +91,27 @@ World = {
 				xCoord = x/self.w * scale
 				yCoord = y/self.h * scale
 				zCoord = scale
-				Noise = love.math.noise(xCoord+love.timer.getTime(),yCoord+love.timer.getTime(),zCoord)* pickMax(0, 1-gradient)
+				self.heightmap = love.math.noise(xCoord+love.timer.getTime(),yCoord+love.timer.getTime(),zCoord)* pickMax(0, 1-gradient)
 				local tex = 2
-				if Noise <= 0.26 then
-					tex = 4
-				elseif Noise > 0.26 and Noise <= 0.3 then
-					tex = 5
+				if self.heightmap <= 0.26 then
+					tex = 4 -- set water
+				elseif self.heightmap > 0.26 and self.heightmap <= 0.3 then
+					tex = 5 -- beach
 				end
 				if tex ~= 4 then
 					local rn = love.math.random(1,100)
-					if rn == 1 then
-						tex = 3
-					elseif rn == 2 then
-						tex = 6
-					elseif rn == 3 then
-						tex = 7
+					if self.heightmap > 0.3 and self.heightmap < 0.5 then
+						-- in grassland
+						if rn == 1 then
+							tex = 3 -- flowers
+						elseif rn == 2 then
+							tex = 6 -- small stone
+						end
+					elseif self.heightmap > 0.4 then
+						--in inner land
+						if rn == 1 then
+							tex = 7 -- large stone
+						end
 					end
 				end
 				self.world[x][y] = {

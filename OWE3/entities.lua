@@ -33,7 +33,7 @@ Entities = {
 		math.randomseed(os.time())
 		for x = 0, World:get('w') do
 			for y = 0, World:get('h') do
-				if World:getTile(x,y).texture ~= 4 then
+				if World:getTile(x,y).texture == 2 then
 					local r = math.random(0, 100)
 					if r == 0 then
 						local id = love.timer.getTime()

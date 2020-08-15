@@ -1,4 +1,10 @@
 local Items = require 'items'
+local message = {
+	active = false,
+	timer = 0,
+	x = 0,
+	y = 0
+}
 
 Ui = {
 	get = function(self, p)
@@ -101,6 +107,11 @@ Ui = {
 			love.graphics.print('Un-Equip', sw-self.invSlotSize, sh-self.invSlotSize-(self.invSlotSize/2)*3)
 		end
 
+		if message.active then
+			love.graphics.setColor(1,1,1,1)
+			love.graphics.print(message.text, message.x, message.y)
+		end		
+
 		if paused then
 			love.graphics.setColor(0.4,0.4,0.4,0.5)
 			love.graphics.rectangle('fill', 0,0,sw,sh)
@@ -119,6 +130,14 @@ Ui = {
 	update = function(self, dt)
 		if not paused then
 			Ui:updateMouse()
+
+			--message
+			if message.timer > 0 then
+				message.timer = message.timer - dt
+			else
+				message.active = false
+			end
+
 		end
 	end,
 
@@ -253,5 +272,23 @@ Ui = {
 	unequip = function(self)
 		Ui:addItem(string.lower(self.equipped.item.name), 'inv')
 		Ui:destroyItem(self.equipped)
+	end,
+
+	Message = function(self, text, x, y, seconds)
+
+		--reset
+		message = {
+			active = false,
+			timer = 0,
+			x = 0,
+			y = 0
+		}
+
+		--set
+		message.text = text
+		message.x = x
+		message.y = y
+		message.timer = seconds
+		message.active = true
 	end,
 }

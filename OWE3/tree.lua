@@ -28,11 +28,13 @@ getUnsaveables = function(t, name)
 
 				if t.health > 0 then
 					t.health = t.health - 1 * dmgMultiplier
+					Ui:Message('Tree Health: '..t.health, math.floor(World:get('x')+(t.x*World:get('tileSize'))),math.floor(World:get('y')+(t.y*World:get('tileSize'))), 1)
 					print('Tree Damaged', t.health)
 				end
 				if t.health <= 0 and not t.chopped then
 					Entities:removeEntity(t.id.."TOP")
 					Ui:addItem('wood', 'inv')
+					Ui:addItem('stick', 'inv')
 					print('Tree Chopped')
 					t.chopped = true
 				end
