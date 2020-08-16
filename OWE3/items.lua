@@ -10,6 +10,7 @@ items = {
 	flower = {
 		name = 'Flower',
 		imgPath = 'assets/flower.png',
+		quant = 0,
 		equip = {
 			dmgMultiplier = 1,
 			attackMultiplier = 1
@@ -17,11 +18,13 @@ items = {
 	},
 	wood = {
 		name = 'Wood',
-		imgPath = 'assets/wood.png'
+		imgPath = 'assets/wood.png',
+		quant = 0,
 	},
 	stick = {
 		name = 'Stick',
 		imgPath = 'assets/stick.png',
+		quant = 0,
 		equip = {
 			dmgMultiplier = 1,
 			attackMultiplier = 1.15
@@ -30,6 +33,7 @@ items = {
 	rock = {
 		name = 'Rock',
 		imgPath = 'assets/rock.png',
+		quant = 0,
 		equip = {
 			dmgMultiplier = 2,
 			attackMultiplier = 2
@@ -37,26 +41,24 @@ items = {
 	},
 }
 
-function newItem(item, x, y)
+function newItem(item, x, y, quant)
 	local itemData = items[item]
 	local Item = {
 
 		load = function(self)
 			self.Type = 'item'
+			self.collect = false
 			self.id = love.timer.getTime()
 			self.x = x
 			self.y = y
 			self.data = itemData
+			self.data.quant = quant
 			self.data.img = love.graphics.newImage(self.data.imgPath)
 			self.tile = World:getTile(math.floor(((x)-World:get('x'))/World:get('tileSize')),math.floor(((y)-World:get('y'))/World:get('tileSize')))
 			self.collisions = {
 				inRadius = false
 			}
 		end,
-
-		-- save = function(self)
-		-- 	return self
-		-- end,
 
 		draw = function(self)
 			love.graphics.draw(self.data.img, self.x, self.y, 0, 0.25, 0.25)
@@ -69,14 +71,50 @@ function newItem(item, x, y)
 		end,
 
 		update = function(self,dt)
-			self.x, self.y = math.floor((World:get('x')+(self.tile.x*World:get('tileSize')))), math.floor(World:get('y')+(self.tile.y*World:get('tileSize')))
+			if self.collect then
+				--print(math.abs(self.x-Entities:getPlayer().x)*500)
+				local x,y = Entities:getPlayer().x-self.x, Entities:getPlayer().y-self.y
+				local dist = math.sqrt( (x*x) + (y*y) )
+				--local cosAngle = ((dist*dist)+(c*c)-(a*a))/(2*dist*c)
+
+				local angle = math.atan2(y, x)
+
+				if dist > 5 then
+					self.x = self.x + math.cos(angle) * dt * 500 / (dist/10)
+					self.y = self.y + math.sin(angle) * dt * 500 / (dist/10)
+				elseif dist <= 5 then
+					self.x = Entities:getPlayer().x
+					self.y = Entities:getPlayer().y
+				end
+
+				-- if self.x > Entities:getPlayer().x+3 then
+				-- 	self.x = self.x - 5 * dt / math.abs(self.x-Entities:getPlayer().x)*500
+				-- elseif self.x < Entities:getPlayer().x-3 then
+				-- 	self.x = self.x + 5 * dt / math.abs(self.x-Entities:getPlayer().x)*500
+				-- else
+				-- 	self.x = Entities:getPlayer().x
+				-- end
+				-- if self.y > Entities:getPlayer().y+3 then
+				-- 	self.y = self.y - 5 * dt / math.abs(self.y-Entities:getPlayer().y)*500
+				-- elseif self.y < Entities:getPlayer().y-3 then
+				-- 	self.y = self.y + 5 * dt / math.abs(self.y-Entities:getPlayer().y)*500
+				-- else
+				-- 	self.y = Entities:getPlayer().y
+				-- end
+				if self.x == Entities:getPlayer().x and self.y == Entities:getPlayer().y then
+					print(self.data.quant)
+					Ui:addItem(string.lower(self.data.name), 'inv', nil, true, self.data.quant)
+					self.collect = true
+					Entities:removeEntity(self.id)
+				end
+			else
+				self.x, self.y = math.floor((World:get('x')+(self.tile.x*World:get('tileSize')))), math.floor(World:get('y')+(self.tile.y*World:get('tileSize')))
+			end
 		end,
 
 		keypressed = function(self,key)
 			if key == 'e' and self.collisions.inRadius then
-				print('pick')
-				Ui:addItem(string.lower(self.data.name), 'inv')
-				Entities:removeEntity(self.id)
+				self.collect = true
 			end
 		end,
 

@@ -100,8 +100,8 @@ Entities = {
 		table.remove(self.entities, index)
 	end,
 
-	dropItem = function(self, item, x, y)
-		local Item = newItem(item,x,y)
+	dropItem = function(self, item, x, y, quant)
+		local Item = newItem(item,x,y, quant)
 		table.insert(self.entities, Item)
 	end,
 

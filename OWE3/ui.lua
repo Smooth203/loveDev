@@ -70,12 +70,17 @@ Ui = {
 			local slotX, slotY = (sw/2)-(self.invSlotSize*(#self.inv/2))+((i-1)*self.invSlotSize), sh-self.invSlotSize
 			love.graphics.setColor(0,0,0,1)
 			love.graphics.rectangle('line', slotX, slotY, self.invSlotSize, self.invSlotSize)
+			love.graphics.setColor(1,1,1,1)
 			if not pcall(function() if slot.item then else error(i) end end) then
 				--print(pcall(function() if slot.item then else error(i) end end))
 			end
 			if slot.item.img then
-				love.graphics.setColor(1,1,1,1)
 				love.graphics.draw(slot.item.img, slotX, slotY)
+			end
+			if slot.item.quant then
+				love.graphics.setColor(0,0,0,1)
+				love.graphics.print(slot.item.quant, slotX, slotY)
+				love.graphics.setColor(1,1,1,1)
 			end
 			if slot.showOptions then
 				love.graphics.rectangle('fill', slotX, slotY-(self.invSlotSize/2), self.invSlotSize, self.invSlotSize/2)
@@ -93,10 +98,18 @@ Ui = {
 		love.graphics.rectangle('fill', sw-self.invSlotSize, sh-self.invSlotSize, self.invSlotSize, self.invSlotSize)
 		love.graphics.setColor(0,0,0,1)
 		love.graphics.rectangle('line', sw-self.invSlotSize, sh-self.invSlotSize, self.invSlotSize, self.invSlotSize)
+		love.graphics.setColor(1,1,1,1)
 		if self.equipped.item.img then
-			love.graphics.setColor(1,1,1,1)
 			love.graphics.draw(self.equipped.item.img, sw-self.invSlotSize, sh-self.invSlotSize)
+			love.graphics.setColor(0,0,0,1)
+			love.graphics.print(self.equipped.item.quant, sw-self.invSlotSize, sh-self.invSlotSize)
+			love.graphics.setColor(1,1,1,1)
 		end
+		if self.equipped.item.quant then
+				love.graphics.setColor(0,0,0,1)
+				love.graphics.print(self.equipped.item.quant, sw-self.invSlotSize, sh-self.invSlotSize)
+				love.graphics.setColor(1,1,1,1)
+			end
 		if self.equipped.showOptions then
 			love.graphics.rectangle('fill', sw-self.invSlotSize, sh-self.invSlotSize-(self.invSlotSize/2), self.invSlotSize, self.invSlotSize/2)
 			love.graphics.rectangle('fill', sw-self.invSlotSize, sh-self.invSlotSize-(self.invSlotSize/2)*2, self.invSlotSize, self.invSlotSize/2)
@@ -217,7 +230,7 @@ Ui = {
 		end
 	end,
 
-	addItem = function(self, item, to, toSlot)
+	addItem = function(self, item, to, toSlot, fromFloor, quant)
 		local item = items[item]
 		local img = love.graphics.newImage(item.imgPath)
 		local complete = false
@@ -227,16 +240,58 @@ Ui = {
 					if slot.isEmpty then
 						slot.item = item
 						slot.item.img = img
+						if not fromFloor then
+							if quant == nil then
+								slot.item.quant = slot.item.quant + 1
+							else
+								slot.item.quant = quant
+							end
+						else
+							slot.item.quant = quant
+						end
 						slot.isEmpty = false
+						complete = true
+						break
+					elseif slot.item == item then
+						if not fromFloor then
+							if quant == nil then
+								slot.item.quant = slot.item.quant + 1
+							else
+								slt.item.quant = quant
+							end
+						else
+							slot.item.quant = quant
+						end
 						complete = true
 						break
 					end
 				end
 			else
 				if item then
-					self.inv[toSlot].item = item
-					self.inv[toSlot].item.img = img
-					self.inv[toSlot].isEmpty = false
+					if self.inv[toSlot].item.isEmpty then
+						self.inv[toSlot].item = item
+						self.inv[toSlot].item.img = img
+						if not fromFloor then
+							if quant == nil then
+								 self.inv[toSlot].item.quant = self.inv[toSlot].item.quant + 1
+							else
+								self.inv[toSlot].item.quant = quant
+							end
+						else
+							self.inv[toSlot].item.quant = quant
+						end
+						self.inv[toSlot].isEmpty = false
+					else
+						if not fromFloor then
+							if quant == nil then
+								self.inv[toSlot].item.quant = self.inv[toSlot].item.quant + 1
+							else
+								self.inv[toSlot].item.quant = quant
+							end
+						else
+							self.inv[toSlot].item.quant = quant
+						end
+					end
 				end
 			end
 		elseif to == 'equipped' then
@@ -256,7 +311,7 @@ Ui = {
 	end,
 
 	dropItem = function(self, slot)
-		Entities:dropItem(string.lower(slot.item.name), Entities:getPlayer().x, Entities:getPlayer().y)
+		Entities:dropItem(string.lower(slot.item.name), Entities:getPlayer().x, Entities:getPlayer().y, slot.item.quant)
 		Ui:destroyItem(slot)
 	end,
 

@@ -1,8 +1,6 @@
 
 HIGH
 {
-	Stacking Items in inventory
-
 	drop excess items if not fit in inv
 }
 

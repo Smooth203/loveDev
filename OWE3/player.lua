@@ -21,8 +21,8 @@ function player_getUnsaveables(player)
 	function player.update(self, dt)
 		player.move(dt)
 
-		--playerTile
-		--player.tileX, player.tileY = math.floor(((player.x)-World:get('x'))/World:get('tileSize')), math.floor(((player.y)-World:get('y'))/World:get('tileSize'))
+		player.worldX = player.x - World:get('x')*World:get('tileSize')
+		player.worldY = player.y - World:get('y')*World:get('tileSize')
 
 		player.camAdjust(dt)
 

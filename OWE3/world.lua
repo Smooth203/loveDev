@@ -36,7 +36,7 @@ World = {
 	end,
 
 	load = function(self, world, info)
-		self.x = info.x
+		self.x = info.x -- in terms of tiles
 		self.y = info.y
 		self.w = info.w
 		self.h = info.h

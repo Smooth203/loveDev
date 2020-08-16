@@ -6,6 +6,7 @@ newGame = function()
 	Ui:new()
 end
 
+require('conf')
 require 'saveload'
 require 'world'
 require 'entities'

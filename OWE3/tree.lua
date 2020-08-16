@@ -9,6 +9,11 @@ local texture = {
 getUnsaveables = function(t, name)
 	if name == 'tree' then
 
+		t.dmgAlert = {
+			active = false,
+			timer = 0
+		}
+
 		t.quad = love.graphics.newQuad(texture.x*World:get('tileSize'), texture.y*World:get('tileSize'), texture.w*World:get('tileSize'), texture.h*World:get('tileSize'), World:get('tileset'):getWidth(), World:get('tileset'):getHeight())
 
 		function t.draw(self)
@@ -16,6 +21,14 @@ getUnsaveables = function(t, name)
 				math.floor(World:get('x')+(t.x*World:get('tileSize'))),
 				math.floor(World:get('y')+(t.y*World:get('tileSize')))
 				)
+
+			if t.dmgAlert.timer > 0 then
+				love.graphics.setColor(0,0,0,1)
+				love.graphics.rectangle('fill', (0.5*World:get('tileSize'))+math.floor(World:get('x')+(t.x*World:get('tileSize'))), (2*World:get('tileSize'))+math.floor(World:get('y')+(t.y*World:get('tileSize'))), (2*World:get('tileSize')), 10)
+				love.graphics.setColor(1,0,0,1)
+				love.graphics.rectangle('fill', (0.5*World:get('tileSize'))+math.floor(World:get('x')+(t.x*World:get('tileSize'))), (2*World:get('tileSize'))+math.floor(World:get('y')+(t.y*World:get('tileSize'))), (2*World:get('tileSize'))*(t.health/t.maxHealth), 10)
+				love.graphics.setColor(1,1,1,1)
+			end
 		end
 		function t.action(self,x,y,button,equipped)
 			if col(x,y,0,0, math.floor(World:get('x')+(t.x*World:get('tileSize'))),math.floor(World:get('y')+(t.y*World:get('tileSize'))),t.w*World:get('tileSize'),t.h*World:get('tileSize')) then
@@ -28,7 +41,7 @@ getUnsaveables = function(t, name)
 
 				if t.health > 0 then
 					t.health = t.health - 1 * dmgMultiplier
-					Ui:Message('Tree Health: '..t.health, math.floor(World:get('x')+(t.x*World:get('tileSize'))),math.floor(World:get('y')+(t.y*World:get('tileSize'))), 1)
+					t.dmgAlert.timer = 1
 					print('Tree Damaged', t.health)
 				end
 				if t.health <= 0 and not t.chopped then
@@ -44,7 +57,11 @@ getUnsaveables = function(t, name)
 			end
 		end
 		function t.update(self,dt)
-
+			if t.dmgAlert.timer > 0 then
+				t.dmgAlert.timer = t.dmgAlert.timer - dt
+			else
+				t.dmgAlert.timer = 0
+			end
 		end
 		function t.mousepressed(self,x,y,button)
 
@@ -66,7 +83,8 @@ structures['tree'] = function(id,x,y)
 	local tree = {}
 	tree.Type = 'structure'
 	tree.name = 'tree'
-	tree.health = 100
+	tree.maxHealth = 100
+	tree.health = tree.maxHealth
 	tree.chopped = false
 	tree.id = tostring(id)
 	tree.quad = love.graphics.newQuad(texture.x*World:get('tileSize'), texture.y*World:get('tileSize'), texture.w*World:get('tileSize'), texture.h*World:get('tileSize'), World:get('tileset'):getWidth(), World:get('tileset'):getHeight())
