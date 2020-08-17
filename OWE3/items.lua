@@ -41,7 +41,15 @@ items = {
 	},
 }
 
-function newItem(item, x, y, quant)
+function getItemCopy(item)
+	local copy = {}
+	for i,v in pairs(items[item]) do
+		copy[i] = v
+	end
+	return copy
+end
+
+function newItem(item, x, y, Quant)
 	local itemData = items[item]
 	local Item = {
 
@@ -52,7 +60,7 @@ function newItem(item, x, y, quant)
 			self.x = x
 			self.y = y
 			self.data = itemData
-			self.data.quant = quant
+			self.quant = Quant
 			self.data.img = love.graphics.newImage(self.data.imgPath)
 			self.tile = World:getTile(math.floor(((x)-World:get('x'))/World:get('tileSize')),math.floor(((y)-World:get('y'))/World:get('tileSize')))
 			self.collisions = {
@@ -68,6 +76,7 @@ function newItem(item, x, y, quant)
 				love.graphics.print("Pick Up: 'E'", self.x-12.5, self.y-30)
 				love.graphics.setColor(1,1,1,1)
 			end
+			love.graphics.print(self.quant, self.x, self.y)
 		end,
 
 		update = function(self,dt)
@@ -102,8 +111,7 @@ function newItem(item, x, y, quant)
 				-- 	self.y = Entities:getPlayer().y
 				-- end
 				if self.x == Entities:getPlayer().x and self.y == Entities:getPlayer().y then
-					print(self.data.quant)
-					Ui:addItem(string.lower(self.data.name), 'inv', nil, true, self.data.quant)
+					Ui:addItem(string.lower(self.data.name), 'inv', nil, true, self.quant)
 					self.collect = true
 					Entities:removeEntity(self.id)
 				end

@@ -71,9 +71,6 @@ Ui = {
 			love.graphics.setColor(0,0,0,1)
 			love.graphics.rectangle('line', slotX, slotY, self.invSlotSize, self.invSlotSize)
 			love.graphics.setColor(1,1,1,1)
-			if not pcall(function() if slot.item then else error(i) end end) then
-				--print(pcall(function() if slot.item then else error(i) end end))
-			end
 			if slot.item.img then
 				love.graphics.draw(slot.item.img, slotX, slotY)
 			end
@@ -217,6 +214,16 @@ Ui = {
 					love.event.quit()
 				end
 			end
+		elseif button == 2 then
+			if not paused then
+				for i, slot in ipairs(self.inv) do
+					local slotX, slotY = (sw/2)-(self.invSlotSize*(#self.inv/2))+((i-1)*self.invSlotSize), sh-self.invSlotSize
+					if col(x,y,0,0, slotX, slotY-(self.invSlotSize/2), self.invSlotSize, self.invSlotSize/2) and slot.showOptions == true then
+						Ui:dropItem(slot, 1)
+						slot.showOptions = false
+					end
+				end
+			end
 		end
 	end,
 
@@ -230,8 +237,8 @@ Ui = {
 		end
 	end,
 
-	addItem = function(self, item, to, toSlot, fromFloor, quant)
-		local item = items[item]
+	addItem = function(self, Item, to, toSlot, fromFloor, quant)
+		local item = getItemCopy(Item)
 		local img = love.graphics.newImage(item.imgPath)
 		local complete = false
 		if to == 'inv' then
@@ -252,15 +259,15 @@ Ui = {
 						slot.isEmpty = false
 						complete = true
 						break
-					elseif slot.item == item then
+					elseif slot.item.name == item.name then
 						if not fromFloor then
 							if quant == nil then
 								slot.item.quant = slot.item.quant + 1
 							else
-								slt.item.quant = quant
+								slot.item.quant = slot.item.quant + quant
 							end
 						else
-							slot.item.quant = quant
+							slot.item.quant = slot.item.quant + quant
 						end
 						complete = true
 						break
@@ -286,10 +293,10 @@ Ui = {
 							if quant == nil then
 								self.inv[toSlot].item.quant = self.inv[toSlot].item.quant + 1
 							else
-								self.inv[toSlot].item.quant = quant
+								self.inv[toSlot].item.quant = self.inv[toSlot].item.quant + quant
 							end
 						else
-							self.inv[toSlot].item.quant = quant
+							self.inv[toSlot].item.quant = self.inv[toSlot].item.quant + quant
 						end
 					end
 				end
@@ -297,6 +304,7 @@ Ui = {
 		elseif to == 'equipped' then
 			self.equipped.item = item
 			self.equipped.item.img = img
+			self.equipped.item.quant = quant
 			complete = true
 		end
 		if complete then
@@ -310,14 +318,22 @@ Ui = {
 		slot.isEmpty = true
 	end,
 
-	dropItem = function(self, slot)
-		Entities:dropItem(string.lower(slot.item.name), Entities:getPlayer().x, Entities:getPlayer().y, slot.item.quant)
-		Ui:destroyItem(slot)
+	dropItem = function(self, slot, amount)
+		if amount == nil then
+			Entities:dropItem(string.lower(slot.item.name), Entities:getPlayer().x, Entities:getPlayer().y, slot.item.quant)
+			Ui:destroyItem(slot)
+		else
+			Entities:dropItem(string.lower(slot.item.name), Entities:getPlayer().x, Entities:getPlayer().y, amount)
+			slot.item.quant = slot.item.quant - amount
+			if slot.item.quant == 0 then
+				Ui:destroyItem(slot)
+			end
+		end
 	end,
 
 	swapItem = function(self, from, to, item)
 		local tmp = to.item.name
-		Ui:addItem(string.lower(from.item.name), to.location)
+		Ui:addItem(string.lower(from.item.name), to.location, nil, nil, from.item.quant)
 		Ui:destroyItem(from)
 		if tmp ~= nil then
 			Ui:addItem(string.lower(tmp), 'inv')

@@ -520,33 +520,6 @@
 	"buffers":
 	[
 		{
-			"file": "ui.lua",
-			"settings":
-			{
-				"buffer_size": 10759,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "items.lua",
-			"settings":
-			{
-				"buffer_size": 3660,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "entities.lua",
-			"settings":
-			{
-				"buffer_size": 2459,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "TODO.txt",
 			"settings":
 			{
@@ -556,9 +529,37 @@
 			}
 		}
 	],
-	"build_system": "",
+	"build_system": "Packages/Lua Love/LuaLove.sublime-build",
 	"build_system_choices":
 	[
+		[
+			[
+				[
+					"Packages/Lua Love/LuaLove.sublime-build",
+					""
+				],
+				[
+					"Packages/Lua Love/LuaLove.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/Lua Love/LuaLove.sublime-build",
+					"Love2D"
+				],
+				[
+					"Packages/Lua Love/LuaLove.sublime-build",
+					"ldoc: File"
+				],
+				[
+					"Packages/Lua Love/LuaLove.sublime-build",
+					"ldoc: Project"
+				]
+			],
+			[
+				"Packages/Lua Love/LuaLove.sublime-build",
+				"Love2D"
+			]
+		],
 		[
 			[
 				[
@@ -576,7 +577,7 @@
 			]
 		]
 	],
-	"build_varint": "",
+	"build_varint": "Love2D",
 	"command_palette":
 	{
 		"height": 0.0,
@@ -613,11 +614,14 @@
 	"expanded_folders":
 	[
 		"/home/james/git-repos/loveDev",
-		"/home/james/git-repos/loveDev/farming",
-		"/home/james/git-repos/loveDev/OWE3"
+		"/C/Users/James/Documents/git-repos/loveDev/OWE3"
 	],
 	"file_history":
 	[
+		"/C/Users/James/Documents/git-repos/loveDev/OWE3/entities.lua",
+		"/C/Users/James/Documents/git-repos/loveDev/OWE3/player.lua",
+		"/C/Users/James/Documents/git-repos/loveDev/OWE3/items.lua",
+		"/C/Users/James/Documents/git-repos/loveDev/OWE3/ui.lua",
 		"/home/james/git-repos/loveDev/survival/main.lua",
 		"/home/james/git-repos/loveDev/physicsTest/main.lua",
 		"/home/james/git-repos/loveDev/OWE3/tree.lua",
@@ -741,11 +745,7 @@
 		"/home/james/git-repos/waggett/webComponentTesting/dynamicList/src/bt-buttons-app/bt-buttons-app.js",
 		"/home/james/git-repos/waggett/webComponentTesting/dynamicList/index.js",
 		"/home/james/git-repos/blueThumbStudy/src/firebaseTools.js",
-		"/home/james/git-repos/waggett/webComponentTesting/dynamicList/test/bt-buttons-app/bt-buttons-app_test.html",
-		"/home/james/git-repos/blueThumbStudy/src/bt-button.js",
-		"/home/james/Desktop/litElementDev/index.html",
-		"/home/james/Desktop/litElementDev/firebaseLogin.js",
-		"/home/james/git-repos/blueThumbStudy/public/index.html"
+		"/home/james/git-repos/waggett/webComponentTesting/dynamicList/test/bt-buttons-app/bt-buttons-app_test.html"
 	],
 	"find":
 	{
@@ -782,98 +782,11 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "ui.lua",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 10759,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3612,
-								3612
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua Love/LuaLove.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 4726.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "items.lua",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3660,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2118,
-								2118
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua Love/LuaLove.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 374.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "entities.lua",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2459,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2459,
-								2459
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua Love/LuaLove.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1326.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
 					"file": "TODO.txt",
 					"semi_transient": false,
 					"settings":
@@ -885,8 +798,8 @@
 						"selection":
 						[
 							[
-								7,
-								7
+								116,
+								116
 							]
 						],
 						"settings":
@@ -905,7 +818,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 26.0
+		"height": 27.0
 	},
 	"input":
 	{
@@ -942,11 +855,11 @@
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "Packages/SublimeLove/Love.sublime-build",
+	"pinned_build_system": "Packages/Lua Love/LuaLove.sublime-build",
 	"project": "owe3.sublime-project",
 	"replace":
 	{
-		"height": 48.0
+		"height": 50.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -984,7 +897,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 160.0,
+	"side_bar_width": 139.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
