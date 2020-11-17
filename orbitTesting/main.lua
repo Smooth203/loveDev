@@ -3,13 +3,14 @@ io.stdout:setvbuf("no") -- live console for ST3
 function love.load()
 	world = love.physics.newWorld(0, 0, true)
 
+	scale = 0.5
+
 	--gravity
-	G = 1000
+	G = 1000 * scale
 
 
 	objects = {}
 
-	scale = 0.25
 
 	objects.sun = {}
 	-- x/2 because body anchors from centre so 50 in each direction, total 100
@@ -25,7 +26,7 @@ function love.load()
 	objects.planet.fixture = love.physics.newFixture(objects.planet.body, objects.planet.shape)
 	objects.planet.body:setPosition(0, 800)
 
-	objects.planet.body:setLinearVelocity(125, 0)
+	--objects.planet.body:setLinearVelocity(35, 0)
 
 end
 
@@ -33,26 +34,21 @@ function love.update(dt)
 	world:update(dt)
 
 	--gravity
-	-- F = Gm1m2 / r^2
-	-- r^2 = rSq
-	--rSq = scale * (objects.planet.body:getX()-objects.sun.body:getX())^2 + (objects.planet.body:getY()-objects.sun.body:getY())^2
-	--force1 = (G * objects.sun.body:getMass() * objects.sun.body:getMass()) / rSq
-	---angle = math.atan( (objects.planet.body:getX()-objects.sun.body:getX())^2 / (objects.planet.body:getY()-objects.sun.body:getY())^2 )
-	--angle = math.atan( (objects.planet.body:getX()-objects.sun.body:getX())^2 / (objects.planet.body:getY()-objects.sun.body:getY())^2 )
-	--objects.planet.body:applyForce(force1*math.cos(angle), force1*math.sin(angle))
-	--objects.sun.body:applyForce(force1*math.cos(angle), force1*math.sin(angle))
 
 	dist = scale * math.sqrt((objects.sun.body:getX()-objects.planet.body:getX())^2 + (objects.sun.body:getY()-objects.planet.body:getY())^2)
 	angle = math.atan2( objects.sun.body:getY()-objects.planet.body:getY(), objects.sun.body:getX()-objects.planet.body:getX() )
 	force = (G * objects.sun.body:getMass() * objects.planet.body:getMass()) / (dist^2)
-	objects.planet.body:applyForce(force*math.cos(angle), force*math.sin(angle))
+	--objects.planet.body:applyForce(scale*force*math.cos(angle), scale*force*math.sin(angle))
+	objects.sun.body:applyForce(scale*force*math.cos(angle), scale*force*math.sin(angle))
 
-	--objects.planet.body:applyForce(10*math.cos(math.pi/2), 10*math.sin(math.pi/2))
-
+	sMinorInv = (1 - ((objects.planet.body:getX()^2)/802^2)) / objects.planet.body:getY()^2
+	sMinor = 1/sMinorInv
 
 	--print(angle*(180/math.pi), force, dist)
-	tv = objects.planet.body:getAngularVelocity() * dist -- vel tangential to motion
-	print(tv)
+	--tv = objects.planet.body:getAngularVelocity() * dist -- vel tangential to motion
+	Lx, Ly =  objects.planet.body:getLinearVelocity()
+	Lv = math.sqrt((Lx^2) + (Ly^2))
+	print(dist, Lv)
 
 
 	if love.keyboard.isDown('up') then
@@ -75,4 +71,5 @@ function love.draw()
 
 	love.graphics.setColor(0.553, 0.81, 0.108)
 	love.graphics.circle('fill', objects.planet.body:getX()*scale, objects.planet.body:getY()*scale, objects.planet.shape:getRadius()*scale)
+	love.graphics.setColor(1,1,1)
 end
